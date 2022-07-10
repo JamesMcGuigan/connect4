@@ -6,14 +6,19 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+dependencies = ["cffi"]
 
 [build-system]
-requires = ["maturin>=0.12,<0.13"]
+requires = [ "maturin>=0.12,<0.13", "cffi" ]
 build-backend = "maturin"
-# [build-system]
-# requires = ["poetry-core>=1.0.0"]
-# build-backend = "poetry.core.masonry.api"
 
+#[build-system]
+#requires = ["poetry-core>=1.0.0"]
+#build-backend = "poetry.core.masonry.api"
+
+[tool.maturin]
+bindings = "cffi"
+compatibility = "linux"
 
 [tool.poetry]
 name = "maturin_kaggle"
@@ -24,7 +29,10 @@ authors = [ "James McGuigan <james.mcguigan@gmail.com>" ]
 [tool.poetry.dependencies]
 python = "^3.10"
 jupyterlab = "^3.2.4"
+cffi = "0.1.7"
+
 
 [tool.poetry.dev-dependencies]
 maturin = "^0.12.4"
 mypy = "^0.910"
+

@@ -37,7 +37,24 @@ maturin_kaggle.double_f64(42) = 84.0
 ```
 
 Kaggle Deployment
+- https://www.kaggle.com/competitions/connectx/submissions
 ```
 poetry run maturin build --release  && ./submission.sh
+kaggle competitions submit -c connectx -f submission/submission.tar.gz -m ''
+```
+
+Manylinux Docker Build
+- https://stackoverflow.com/questions/62838212/whats-the-correct-way-to-compile-maturin-packages
+- https://github.com/PyO3/maturin
+```
+sudo pacman -S docker
+systemctl enable docker
+systemctl start docker
+
+sudo rm -rf ./target/
+sudo docker run --rm -v $(pwd):/io konstin2/maturin build --release
+sudo chmod a+rw -R ./target/
+sudo bash ./submission.sh
+
 kaggle competitions submit -c connectx -f submission/submission.tar.gz -m ''
 ```
