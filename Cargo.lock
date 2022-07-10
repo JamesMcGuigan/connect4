@@ -49,7 +49,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "maturin_test"
+name = "maturin_kaggle"
 version = "0.1.0"
 dependencies = [
  "anyhow",

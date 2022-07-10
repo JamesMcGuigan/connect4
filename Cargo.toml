@@ -1,11 +1,11 @@
 [package]
-name = "maturin_test"
+name = "maturin_kaggle"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "maturin_test"
+name = "maturin_kaggle"
 crate-type = ["cdylib"]
 
 [dependencies]

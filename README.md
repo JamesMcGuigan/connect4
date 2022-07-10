@@ -5,7 +5,7 @@
 Install
 ```
 pip install cffi maturin 
-maturin new maturin_test  # cffi bindings are more compatable
+maturin new maturin_kaggle  # cffi bindings are more compatable
 python3 -m venv venv 
 ```
 
@@ -31,7 +31,7 @@ Usage
 $ source  ./python/venv/bin/activate
 $ python3 ./python/main.py
 
-import maturin_test
-maturin_test.double(42)     = 84
-maturin_test.double_f64(42) = 84.0
+import maturin_kaggle
+maturin_kaggle.double(42)     = 84
+maturin_kaggle.double_f64(42) = 84.0
 ```

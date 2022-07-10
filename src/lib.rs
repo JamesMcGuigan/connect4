@@ -18,7 +18,7 @@ fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
 }
 
 #[pymodule]
-#[pyo3(name = "maturin_test")]
+#[pyo3(name = "maturin_kaggle")]
 fn module_with_functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(double))?;
     m.add_wrapped(wrap_pyfunction!(double_f64))?;
