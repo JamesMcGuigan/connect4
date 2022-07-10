@@ -1,4 +1,6 @@
-/target
+target
+venv
+submission
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

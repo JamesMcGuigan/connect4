@@ -9,6 +9,7 @@ name = "maturin_kaggle"
 crate-type = ["cdylib"]
 
 [dependencies]
+rand = "0.8.5"
 thiserror = "1.0.0"
 anyhow = "1.0.51"
 pyo3 = { version = "0.16.5", features = ["extension-module"] }

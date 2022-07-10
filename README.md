@@ -23,7 +23,7 @@ cargo check               # WORKS
 cargo build               # ERROR: linker failure
 poetry install            # reads pyproject.toml
 poetry run maturin develop
-poetry run maturin build --release
+poetry run maturin build --release  && ./submission.sh
 ```
 
 Usage
@@ -34,4 +34,10 @@ $ python3 ./python/main.py
 import maturin_kaggle
 maturin_kaggle.double(42)     = 84
 maturin_kaggle.double_f64(42) = 84.0
+```
+
+Kaggle Deployment
+```
+poetry run maturin build --release  && ./submission.sh
+kaggle competitions submit -c connectx -f submission/submission.tar.gz -m ''
 ```
