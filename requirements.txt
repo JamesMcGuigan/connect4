@@ -13,7 +13,9 @@ cachecontrol[filecache]==0.12.11
 cachy==0.3.0
     # via poetry
 certifi==2022.6.15
-    # via requests
+    # via
+    #   kaggle
+    #   requests
 cffi==1.15.1
     # via
     #   -r requirements.in
@@ -56,6 +58,8 @@ jinja2==3.1.2
     # via flask
 jsonschema==4.6.2
     # via kaggle-environments
+kaggle==1.5.12
+    # via -r requirements.in
 kaggle-environments==1.9.10
     # via -r requirements.in
 keyring==23.6.0
@@ -100,9 +104,14 @@ pyparsing==3.0.9
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
+python-dateutil==2.8.2
+    # via kaggle
+python-slugify==6.1.2
+    # via kaggle
 requests==2.28.1
     # via
     #   cachecontrol
+    #   kaggle
     #   kaggle-environments
     #   poetry
     #   requests-toolbelt
@@ -115,7 +124,11 @@ shellingham==1.4.0
 six==1.16.0
     # via
     #   html5lib
+    #   kaggle
+    #   python-dateutil
     #   virtualenv
+text-unidecode==1.3
+    # via python-slugify
 tomli==2.0.1
     # via
     #   build
@@ -123,8 +136,12 @@ tomli==2.0.1
     #   pep517
 tomlkit==0.11.1
     # via poetry
+tqdm==4.64.0
+    # via kaggle
 urllib3==1.26.10
-    # via requests
+    # via
+    #   kaggle
+    #   requests
 virtualenv==20.15.1
     # via poetry
 webencodings==0.5.1

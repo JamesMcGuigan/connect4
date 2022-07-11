@@ -5,4 +5,5 @@ pip-tools
 poetry
 maturin
 cffi
+kaggle
 kaggle_environments

@@ -21,8 +21,8 @@ build-backend = "maturin"
 # ["libc.so.6 offending versions: GLIBC_2.33, GLIBC_2.28, GLIBC_2.34, GLIBC_2.18"]. Consider building in a manylinux docker container:
 [tool.maturin]
 strip = true         # Strip the library for minimum file size
-# bindings = "pyo3"  # Kaggle works with both pyo3 + cffi bindings
-bindings = "cffi"
+bindings = "pyo3"    # maturin develop requires pyo3 bindings
+# bindings = "cffi"  # Kaggle works with both pyo3 + cffi bindings
 # compatibility = "manylinux2014"  # use: docker run --rm -v $(pwd):/io ghcr.io/pyo3/maturin build --release
 compatibility = "linux"            # for maturin build --release
 
@@ -37,7 +37,8 @@ authors = [ "James McGuigan <james.mcguigan@gmail.com>" ]
 python = "^3.10"
 jupyterlab = "^3.2.4"
 cffi = "0.1.7"
-
+kaggle = "1.5.12"
+kaggle-environments = "1.9.10"
 
 [tool.poetry.dev-dependencies]
 maturin = "^0.12.4"
