@@ -1,5 +1,5 @@
 [project]
-name = "maturin_kaggle"
+name = "connectx"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Rust",
@@ -28,9 +28,9 @@ compatibility = "linux"            # for maturin build --release
 
 
 [tool.poetry]
-name = "maturin_kaggle"
+name = "connectx"
 version = "0.1.0"
-description = ""
+description = "Kaggle Connect4 in Rust"
 authors = [ "James McGuigan <james.mcguigan@gmail.com>" ]
 
 [tool.poetry.dependencies]

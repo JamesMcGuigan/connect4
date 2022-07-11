@@ -121,7 +121,7 @@ pub fn modulo_move_struct(obs: Observation, conf: Configuration) -> u8 {
 }
 
 #[pymodule]
-#[pyo3(name = "maturin_kaggle")]
+#[pyo3(name = "connectx")]
 fn module_with_functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Observation>()?;
     m.add_class::<Configuration>()?;

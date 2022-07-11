@@ -36,7 +36,7 @@ and accessible to a python script.
 ## Install
 ```
 pip install cffi maturin 
-maturin new maturin_kaggle  # cffi bindings are more compatable
+maturin new connectx  # cffi bindings are more compatable
 python3 -m venv venv
 pip-compile -v
 pip install -r requirements.txt

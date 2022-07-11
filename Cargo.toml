@@ -1,12 +1,12 @@
 [package]
-name = "maturin_kaggle"
+name = "connectx"
 version = "0.1.0"
 edition = "2021"
 
 # DEFS: https://doc.rust-lang.org/cargo/reference/manifest.html
 # DOCS: https://stackoverflow.com/questions/62838212/whats-the-correct-way-to-compile-maturin-packages
 [lib]
-name = "maturin_kaggle"
+name = "connectx"
 crate-type = ["cdylib", "staticlib"]
 
 
