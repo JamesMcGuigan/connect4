@@ -16,9 +16,16 @@ build-backend = "maturin"
 #requires = ["poetry-core>=1.0.0"]
 #build-backend = "poetry.core.masonry.api"
 
+# DOCS: https://maturin.rs/metadata.html
+# Your library is not manylinux_2_17 (aka manylinux2014) compliant because of the presence of too-recent versioned symbols:
+# ["libc.so.6 offending versions: GLIBC_2.33, GLIBC_2.28, GLIBC_2.34, GLIBC_2.18"]. Consider building in a manylinux docker container:
 [tool.maturin]
-bindings = "cffi"
-compatibility = "linux"
+strip = true         # Strip the library for minimum file size
+bindings = "pyo3"    # Kaggle works with both pyo3 + cffi bindings
+# bindings = "cffi"
+# compatibility = "manylinux2014"  # use: docker run --rm -v $(pwd):/io ghcr.io/pyo3/maturin build --release
+compatibility = "linux"            # for maturin build --release
+
 
 [tool.poetry]
 name = "maturin_kaggle"

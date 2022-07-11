@@ -10,6 +10,24 @@ name = "maturin_kaggle"
 crate-type = ["cdylib", "staticlib"]
 
 
+# DOCS: https://yew.rs/docs/advanced-topics/optimizations
+# DOCS: https://docs.rust-embedded.org/book/unsorted/speed-vs-size.html
+[profile.release]
+panic = 'abort'     # less code to include into binary
+lto   = true        # link time optimization using using whole-program analysis
+codegen-units = 1   # optimization over all codebase ( better optimization, slower build )
+opt-level     = 3   # optimization for speed
+# opt-level   = 'z' # optimization for size ( more aggressive )
+# opt-level   = 's' # optimization for size
+
+# DOCS: https://www.reddit.com/r/rust/comments/gvrgca/this_is_a_neat_trick_for_getting_good_runtime/
+[profile.dev.package."*"]
+opt-level = 3  # Optimize dependencies in Development mode - they don't change often
+
+[profile.dev]
+opt-level = 1  # Turn on a small amount of optimisation in Development mode.
+
+
 [dependencies]
 cffi = "0.1.7"
 rand = "0.8.5"

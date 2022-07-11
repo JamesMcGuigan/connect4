@@ -1,0 +1,8 @@
+# source venv/bin/activate
+# pip-compile -v; pip install -r requirements.txt
+
+pip-tools
+poetry
+maturin
+cffi
+kaggle_environments
