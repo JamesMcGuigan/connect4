@@ -12,6 +12,7 @@ import connectx
 from connectx import Observation, Configuration
 from kaggle_environments.envs.connectx.connectx import is_win
 
+
 # DOCS: https://www.kaggle.com/competitions/connectx/overview/environment-rules
 # DOCS: https://www.kaggle.com/c/halite/discussion/177686
 def connectx_agent(obs, conf, verbose=True, TEST_SUBMISSION=True):
@@ -21,7 +22,7 @@ def connectx_agent(obs, conf, verbose=True, TEST_SUBMISSION=True):
 
     rust_obs  = Observation(**obs)
     rust_conf = Configuration(**conf)
-    action    = connectx.modulo_move_struct(rust_obs, rust_conf)
+    action    = connectx.agent_random(rust_obs, rust_conf)
 
     time_taken = time.perf_counter() - time_start
     if verbose: print(f" action = {action} | {time_taken:.3f}s")

@@ -41,27 +41,10 @@ def play_game(obs, conf, agents):
 if __name__ == '__main__':
     obs    = structify({ 'remainingOverageTime': 60, 'step': 0, 'mark': 1, 'board': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]})
     conf   = structify({ 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' })
-    agents = [ connectx_agent, connectx_agent ]
-
     rust_obs  = Observation(**obs)
     rust_conf = Configuration(**conf)
 
-    print("connectx.random_move(conf.columns) =", connectx.random_move_column(rust_conf.columns))
-    print("connectx.modulo_move_args(**obs + **conf) =", connectx.modulo_move_args(
-        obs.step,
-        obs.mark,
-        obs.board,
-        obs.remainingOverageTime,
-        conf.columns,
-        conf.rows,
-        conf.inarow,
-        conf.timeout,
-        conf.actTimeout,
-        conf.agentTimeout,
-        conf.episodeSteps,
-        conf.runTimeout,
-        conf.__raw_path__,
-    ))
-    print("connectx.modulo_move_struct(conf.columns) =", connectx.modulo_move_struct(rust_obs, rust_conf))
+    agents = [ connectx.agent_random, connectx.agent_modulo ]
+    print("connectx.agent_random(rust_obs, rust_conf) =", connectx.agent_random(rust_obs, rust_conf))
+    print("connectx.agent_modulo(rust_obs, rust_conf) =", connectx.agent_modulo(rust_obs, rust_conf))
     play_game(obs, conf, agents)
-
