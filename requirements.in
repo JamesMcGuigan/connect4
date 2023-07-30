@@ -1,3 +1,4 @@
+# /usr/bin/python3 -m venv venv  # use system python3 not miniconda
 # source venv/bin/activate
 # pip-compile -v; pip install -r requirements.txt
 
@@ -6,4 +7,4 @@ poetry
 maturin
 cffi
 kaggle
-kaggle_environments
+kaggle_environments  # Miniconda BUG: https://github.com/Kaggle/kaggle-environments/issues/239
