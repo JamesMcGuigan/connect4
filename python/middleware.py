@@ -12,8 +12,8 @@ def middleware_agent(rust_agent, verbose=True, TEST_SUBMISSION=True):
         # conf = { 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' }
         time_start = time.perf_counter()
 
-        rust_obs  = connectx.Observation(**obs)      # rust = structs/kaggle.rs
-        rust_conf = connectx.Configuration(**conf)   # rust = structs/kaggle.rs
+        rust_obs  = connectx.Observation(**obs)      # rust = inputs/inputs.rs
+        rust_conf = connectx.Configuration(**conf)   # rust = inputs/inputs.rs
         action    = rust_agent(rust_obs, rust_conf)
 
         time_taken = time.perf_counter() - time_start

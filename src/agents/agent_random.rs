@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 use rand::Rng;
 
-use crate::structs::{Configuration, Observation};
+use crate::inputs::{Configuration, Observation};
 
 #[pyfunction]
 pub fn agent_random(obs: Observation, conf: Configuration) -> u8 {

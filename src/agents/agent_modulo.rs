@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 
-use crate::structs::{Configuration, Observation};
+use crate::inputs::{Configuration, Observation};
 
 #[pyfunction]
 #[allow(dead_code)]

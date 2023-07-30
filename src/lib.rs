@@ -3,10 +3,10 @@ use pyo3::wrap_pyfunction;
 
 use crate::agents::agent_modulo::agent_modulo;
 use crate::agents::agent_random::agent_random;
-use crate::structs::{Configuration, Observation};
+use crate::inputs::{Configuration, Observation};
 
 pub mod agents;
-pub mod structs;
+pub mod inputs;
 
 #[pymodule]
 #[pyo3(name = "connectx")]
