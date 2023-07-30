@@ -3,9 +3,7 @@
 import connectx
 from kaggle_environments import structify
 from kaggle_environments.envs.connectx.connectx import is_win, play
-from connectx import Observation, Configuration
-
-from main import connectx_agent
+from middleware import middleware_agent
 
 
 def print_board(obs, conf):
@@ -16,7 +14,7 @@ def print_board(obs, conf):
 def play_game(obs, conf, agents):
     while True:
         agent  = agents[obs.mark-1]
-        action = agent(obs, conf, verbose=False, TEST_SUBMISSION=False)
+        action = agent(obs, conf)
         if obs.board[action] != 0:
             print(f"ERROR: {obs.step:2d} | agent({obs.mark}) = {action}")
             break
@@ -39,12 +37,16 @@ def play_game(obs, conf, agents):
 
 # Recompile: poetry run maturin develop
 if __name__ == '__main__':
-    obs    = structify({ 'remainingOverageTime': 60, 'step': 0, 'mark': 1, 'board': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]})
-    conf   = structify({ 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' })
-    rust_obs  = Observation(**obs)
-    rust_conf = Configuration(**conf)
 
-    agents = [ connectx.agent_random, connectx.agent_modulo ]
-    print("connectx.agent_random(rust_obs, rust_conf) =", connectx.agent_random(rust_obs, rust_conf))
-    print("connectx.agent_modulo(rust_obs, rust_conf) =", connectx.agent_modulo(rust_obs, rust_conf))
+    ### Config
+    agents = [
+        middleware_agent(connectx.agent_random, verbose=False, TEST_SUBMISSION=False),
+        middleware_agent(connectx.agent_modulo, verbose=False, TEST_SUBMISSION=False),
+    ]
+    obs  = structify({ 'remainingOverageTime': 60, 'step': 0, 'mark': 1, 'board': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]})
+    conf = structify({ 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' })
+
+    ### Test
+    print("middleware_agent( connectx.agent_random, verbose=False, TEST_SUBMISSION=False ) =", agents[0](obs, conf))
+    print("middleware_agent( connectx.agent_modulo, verbose=False, TEST_SUBMISSION=False ) =", agents[1](obs, conf))
     play_game(obs, conf, agents)

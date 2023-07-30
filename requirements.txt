@@ -61,7 +61,9 @@ installer==0.7.0
 itsdangerous==2.1.2
     # via flask
 jaraco-classes==3.3.0
-    # via keyring
+    # via
+    #   -r requirements.in
+    #   keyring
 jeepney==0.8.0
     # via
     #   keyring

@@ -2,6 +2,7 @@
 # DOCS: https://www.kaggle.com/c/halite/discussion/177686
 cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"  # cd current directory
 source venv/bin/activate
+if command -v conda 1>/dev/null 2>&1; then conda deactivate 2> /dev/null; unset CONDA_PREFIX; fi   # WORKAROUND: maturin failed | unset one of: VIRTUAL_ENV, CONDA_PREFIX
 set -x
 
 # rm -rf ./target/    || sudo rm   -rf ./target/
@@ -10,7 +11,7 @@ rm -rf ./submission/  || sudo rm   -rf ./submission/
 ### ManyLinux build for Kaggle AI Games submission
 # sudo chmod 666 /var/run/docker.sock
 time maturin develop  # requires bindings="pyo3"
-time docker run --rm -v $(pwd):/io ghcr.io/pyo3/maturin build --release
+time docker run --rm -v $(pwd):/io ghcr.io/pyo3/maturin build --release   # requires: sudo usermod -aG docker $(whoami); reboot;
 
 rm   -rf ./submission/
 mkdir -p ./submission/
