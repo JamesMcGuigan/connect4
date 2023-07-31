@@ -1,3 +1,4 @@
-pub use kaggle::{Configuration, Observation};
-
-pub mod kaggle;
+pub mod configuration;
+pub mod observation;
+pub use observation::Observation;
+pub use configuration::Configuration;
