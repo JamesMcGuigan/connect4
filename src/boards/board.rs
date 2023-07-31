@@ -2,29 +2,27 @@ use std::ops::Range;
 use crate::inputs::Configuration;
 
 
-type PlayerID = u8;    // CONTRACT: [0,1]
-type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
-type GameCol  = u8;    // CONTRACT: 0 .. Self::get_config().columns
+pub type PlayerID = u8;    // CONTRACT: [0,1,2] | 0 == empty, 1 == p1, 2 == p2
+pub type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
+pub type GameCol  = u8;    // CONTRACT: 0 .. Self::get_config().columns
 
 
 pub trait Board {
     fn get_config(&self)  -> Configuration;
-    fn get_players(&self) -> Range<PlayerID> { 0..2 }                               // == [0,1]
+    fn get_players(&self) -> [PlayerID; 2]   { [1,2] }                                       // == [1,2]
     fn get_actions(&self) -> Range<GameRow>  { 0..Self::get_config(self).columns }  // == [0,1,2,3,4,5,6]
 
     fn get_move_number(&self) -> u8;
     fn get_move_player(&self) -> PlayerID {
-        // even move 0 % 2 == player 0
-        // odd  move 1 % 2 == player 1
-        self.get_move_number() % self.get_players().len() as u8
+        if self.get_move_number() % 2 == 0 { self.get_players()[0] } else { self.get_players()[1] }
     }
 
     fn get_col_height(&self, col: GameCol) -> Option<GameRow>;
-    fn get_square_value(&self, col: GameCol, row: GameRow) -> Option<PlayerID>;
+    fn get_square_value(&self, col: GameCol, row: GameRow) -> PlayerID;
     fn is_square_empty(&self,  col: GameCol, row: GameRow) -> bool {
-        self.get_square_value(col, row).is_none()
+        self.get_square_value(col, row) == 0
     }
-    fn set_square_value(&self, col: GameCol, row: GameRow, value: Option<PlayerID>) -> Self;
+    fn set_square_value(&self, col: GameCol, row: GameRow, value: PlayerID) -> Self;
 
     fn is_valid_action(&self, action: GameRow) -> bool;
     fn any_valid_actions(&self) -> bool {
@@ -40,7 +38,7 @@ pub trait Board {
     fn is_win(&self, player_id: PlayerID) -> bool;
     fn is_draw(&self) -> bool { !Self::any_valid_actions(self) }
     fn terminated(&self) -> bool {
-        self.is_draw() || self.get_players().any(|player_id| { self.is_win(player_id) })
+        self.is_draw() || self.get_players().iter().any(|&player_id| self.is_win(player_id))
     }
 
     /// Play action and return copy of next board
