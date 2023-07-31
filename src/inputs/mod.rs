@@ -1,4 +1,4 @@
-pub mod configuration;
 pub mod observation;
-pub use observation::Observation;
-pub use configuration::Configuration;
+pub mod configuration;
+pub use observation::{Observation, ObservationArray, PlayerID};
+pub use configuration::{Configuration,MAX_ROWS,MAX_COLS,INAROW};

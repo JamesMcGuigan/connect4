@@ -1,4 +1,8 @@
 use pyo3::prelude::*;
+use crate::inputs::{MAX_COLS, MAX_ROWS};
+
+pub type PlayerID = u8;
+pub type ObservationArray = [PlayerID; (MAX_COLS * MAX_ROWS) as usize];  // == [u8;42]
 
 // DOCS: https://pyo3.rs/v0.13.2/class.html
 #[pyclass]
@@ -7,7 +11,7 @@ use pyo3::prelude::*;
 pub struct Observation {
     #[pyo3(get)] pub step: u8,
     #[pyo3(get)] pub mark: u8,
-    #[pyo3(get)] pub board: [u8;42],
+    #[pyo3(get)] pub board: ObservationArray,
     #[pyo3(get)] pub remainingOverageTime: f32,
 }
 #[pymethods]
