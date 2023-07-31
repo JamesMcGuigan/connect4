@@ -1,4 +1,3 @@
-
 use pyo3::prelude::*;
 
 // DOCS: https://pyo3.rs/v0.13.2/class.html
@@ -17,5 +16,19 @@ impl Observation {
     #[new]
     fn new(step: u8, mark: u8, board: [u8;42], remainingOverageTime: f32) -> Self {
         Observation { step, mark, board, remainingOverageTime }
+    }
+}
+
+
+/// obs  = { 'remainingOverageTime': 60, 'step': 0, 'mark': 1, 'board': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+/// conf = { 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' }
+impl Default for Observation {
+    fn default() -> Self {
+        Observation {
+            step: 0,
+            mark: 1,
+            board: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            remainingOverageTime: 60.0,
+        }
     }
 }
