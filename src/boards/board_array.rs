@@ -2,7 +2,7 @@
 
 use contracts::requires;
 use crate::boards::board::{Board, GameCol, GameRow};
-use crate::inputs::{Configuration, Observation, ObservationArray, PlayerID};
+use crate::inputs::{Observation, ObservationArray, PlayerID};
 use crate::inputs::{MAX_COLS, MAX_ROWS};
 
 
@@ -35,7 +35,7 @@ impl BoardArray {
 
 impl Board for BoardArray
 {
-    fn from_observation(observation: Observation, _configuration: Configuration) -> Self {
+    fn from_observation(observation: Observation) -> Self {
         let board = BoardArray {
             board:         observation.board,
             move_number:   observation.step,
