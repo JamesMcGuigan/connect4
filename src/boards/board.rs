@@ -11,7 +11,7 @@ pub trait Board {
     fn from_observation(observation: Observation, configuration: Configuration) -> Self;
 
     // fn get_config(&self)  -> Configuration;
-    fn get_players(&self) -> [PlayerID; 2]   { [1,2] }           // == [1,2]
+    fn get_players(&self) -> [PlayerID; 2]   { [1,2] }        // == [1,2]
     fn get_actions(&self) -> Range<GameRow>  { 0..MAX_COLS }  // == [0,1,2,3,4,5,6]
 
     fn get_move_number(&self) -> u8;
@@ -41,10 +41,6 @@ pub trait Board {
 
     // Validation Functions
 
-    fn is_valid_coordinate(&self, col: i8, row: i8) -> bool {
-        (0..MAX_COLS as i8).contains(&col) &&
-        (0..MAX_ROWS as i8).contains(&row)
-    }
     fn is_valid_action(&self, action: GameRow) -> bool {
         if action >= MAX_COLS as GameRow { return false; }
         !self.is_square_empty(action, 0)
@@ -68,23 +64,29 @@ pub trait Board {
 
     // Game Termination Functions
 
-    fn winning_lines(&self) -> Vec<GameLine> {
+    fn winning_lines() -> Vec<GameLine> {
         let directions: Vec<(i8, i8)> = vec![
             (0, 1),  // Vertical |
             (1, 0),  // Horizontal -
             (1, 1),  // Diagonal \
             (1, -1), // Diagonal /
         ];
-        let mut output = Vec::new();
+        let mut output: Vec<GameLine> = Vec::new();
+
+        // Loop over each starting square on the board
         for start_col in 0..MAX_COLS as GameCol {
             for start_row in 0..MAX_ROWS as GameRow {
 
+                // Collect Vec<GameLine> from each direction, excluding coordinate out-of-bounds
                 'direction: for direction in &directions {
                     let mut line = Vec::new();
                     for offset in 0..INAROW as GameRow {
+                        // i8 required for -1 negative out-of-bounds values
                         let col: i8 = start_col as i8 + offset as i8 * direction.0;
                         let row: i8 = start_row as i8 + offset as i8 * direction.1;
-                        if self.is_valid_coordinate(col, row) {
+                        if (0..MAX_COLS as i8).contains(&col) &&
+                           (0..MAX_ROWS as i8).contains(&row)
+                        {
                             line.push((col as GameCol, row as GameRow));
                         } else {
                             break 'direction;  // Out-of-Bounds = Discard Line
@@ -99,7 +101,7 @@ pub trait Board {
         output
     }
     fn is_win(&self, player_id: PlayerID) -> bool {
-        let win_coordinates = self.winning_lines();
+        let win_coordinates = Self::winning_lines();
         win_coordinates.iter().any(|line| {
             line.iter().all(|&(col, row)| {
                 self.get_square_value(col, row) == player_id
