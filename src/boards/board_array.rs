@@ -16,7 +16,7 @@ pub struct BoardArray {
 impl BoardArray {
     #[requires((0..MAX_COLS).contains(&col))]
     #[requires((0..MAX_ROWS).contains(&row))]
-    fn get_index(&self, col: GameCol, row: GameRow) -> usize {
+    fn get_index(col: GameCol, row: GameRow) -> usize {
         // col 0 == left | row 7-1 == right
         // row 0 == top  | row 6-1 == bottom
         (col as usize) + (row as usize) * (MAX_COLS as usize)
@@ -27,7 +27,7 @@ impl BoardArray {
     #[requires([0,1,2].contains(&row))]
     fn set_index(&self, col: GameCol, row: GameRow, value: PlayerID) -> ObservationArray {
         let mut board = self.board;
-        let index = self.get_index(col, row);
+        let index = Self::get_index(col, row);
         board[index] = value;
         board
     }
@@ -56,7 +56,7 @@ impl Board for BoardArray
     }
 
     fn get_square_value(&self, col: GameCol, row: GameRow) -> PlayerID {
-        let index = self.get_index(col, row);
+        let index = Self::get_index(col, row);
         self.board[index]
     }
 
@@ -73,6 +73,24 @@ impl Board for BoardArray
             player_id:   self.get_next_player(),
             // observation:   self.observation.clone(),
             // configuration: self.configuration.clone(),
+        }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_index() {
+        let mut expected_index: usize = 0;
+        for row in 0..MAX_ROWS {
+            for col in 0..MAX_COLS {
+                let actual_index = BoardArray::get_index(col, row);
+                assert_eq!(actual_index, expected_index);
+                expected_index += 1;
+            }
         }
     }
 }
