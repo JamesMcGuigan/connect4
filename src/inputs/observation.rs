@@ -23,23 +23,6 @@ impl Observation {
     }
 }
 
-#[allow(dead_code)]
-impl Observation {
-    fn from_array(board: ObservationArray) -> Self {
-        let step = board.iter()
-            .filter(|&square| { *square != 0 as PlayerID })
-            .count() as u8;
-        let mark = if step % 2 == 0 { 1 } else { 2 };
-
-        Observation {
-            step,
-            mark,
-            board,
-            remainingOverageTime: 0.0,
-        }
-    }
-}
-
 /// obs  = { 'remainingOverageTime': 60, 'step': 0, 'mark': 1, 'board': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
 /// conf = { 'timeout': 2, 'actTimeout': 2, 'agentTimeout': 60, 'episodeSteps': 1000, 'runTimeout': 1200, 'columns': 7, 'rows': 6, 'inarow': 4, '__raw_path__': '/kaggle_simulations/agent/main.py' }
 impl Default for Observation {
@@ -48,6 +31,22 @@ impl Default for Observation {
             step: 0,
             mark: 1,
             board: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            remainingOverageTime: 0.0,
+        }
+    }
+}
+
+impl From<ObservationArray> for Observation {
+    fn from(input: ObservationArray) -> Self {
+        let step = input.iter()
+            .filter(|&square| { *square != 0 as PlayerID })
+            .count() as u8;
+        let mark = if step % 2 == 0 { 1 } else { 2 };
+
+        Observation {
+            step,
+            mark,
+            board: input,
             remainingOverageTime: 0.0,
         }
     }
@@ -64,14 +63,14 @@ mod tests {
         #[test]
         fn test_default() {
             let input  = Observation::default();
-            let output = Observation::from_array(input.board);
+            let output = Observation::from(input.board);
             assert_eq!(input, output);
         }
 
         #[test]
         fn test_first_move() {
             let input = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
-            let output = Observation::from_array(input);
+            let output = Observation::from(input);
             assert_eq!(output.board, input);
             assert_eq!(output.step,  1);
             assert_eq!(output.mark,  2);
@@ -80,7 +79,7 @@ mod tests {
         #[test]
         fn test_second_move() {
             let input = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1];
-            let output = Observation::from_array(input);
+            let output = Observation::from(input);
             assert_eq!(output.board, input);
             assert_eq!(output.step,  2);
             assert_eq!(output.mark,  1);

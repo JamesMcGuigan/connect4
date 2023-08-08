@@ -1,5 +1,5 @@
 use std::ops::Range;
-use crate::inputs::{MAX_COLS, MAX_ROWS, INAROW, Observation};  // Configuration
+use crate::inputs::{MAX_COLS, MAX_ROWS, INAROW};  // Observation, Configuration
 use crate::inputs::observation::PlayerID;
 
 
@@ -9,18 +9,18 @@ type GameLine = Vec<(GameCol, GameRow)>;
 
 pub trait Board {
     // fn from_observation(observation: Observation, configuration: Configuration) -> Self;
-    fn from_observation(observation: Observation) -> Self;
+    // fn from_observation(observation: Observation) -> Self;
 
     // fn get_config(&self)  -> Configuration;
-    fn get_players()          -> [PlayerID; 2]   { [1,2] }        // == [1,2]
-    fn get_possible_actions() -> Range<GameRow>  { 0..MAX_COLS }  // == [0,1,2,3,4,5,6]
+    fn get_players(&self)          -> [PlayerID; 2]   { [1,2] }        // == [1,2]
+    fn get_possible_actions(&self) -> Range<GameRow>  { 0..MAX_COLS }  // == [0,1,2,3,4,5,6]
 
     fn get_move_number(&self) -> u8;
     fn get_move_player(&self) -> PlayerID {
-        if self.get_move_number() % 2 == 0 { Self::get_players()[0] } else { Self::get_players()[1] }
+        if self.get_move_number() % 2 == 0 { self.get_players()[0] } else { self.get_players()[1] }
     }
     fn get_next_player(&self) -> PlayerID {
-        if self.get_move_player() == Self::get_players()[0] { Self::get_players()[1] } else { Self::get_players()[0] }
+        if self.get_move_player() == self.get_players()[0] { self.get_players()[1] } else { self.get_players()[0] }
     }
 
 
@@ -43,15 +43,14 @@ pub trait Board {
     // Validation Functions
 
     fn is_valid_action(&self, action: GameRow) -> bool {
-        if action >= MAX_COLS as GameRow { return false; }
-        !self.is_square_empty(action, 0)
+        (0..MAX_COLS as GameRow).contains(&action) && self.is_square_empty(action, 0)
     }
     fn any_valid_actions(&self) -> bool {
-        Self::get_possible_actions()
+        self.get_possible_actions()
             .any(|action| { !self.is_valid_action(action) })
     }
     fn get_valid_actions(&self) -> Vec<GameRow> {
-        Self::get_possible_actions()
+        self.get_possible_actions()
             .filter(|action| { self.is_valid_action(*action) })
             .collect()
     }
@@ -60,12 +59,12 @@ pub trait Board {
     /// Not object-safe to define in Trait, requires Struct specific functions
     /// CONTRACT: action <= Self::get_config().columns
     /// CONTRACT: self.is_valid_action(action)
-    fn step(&self, action: GameCol) -> Self;
+    fn step(&self, action: GameCol) -> Box<dyn Board>;
 
 
     // Game Termination Functions
 
-    fn winning_lines() -> Vec<GameLine> {
+    fn winning_lines(&self) -> Vec<GameLine> {
         let directions: Vec<(i8, i8)> = vec![
             (0, 1),  // Vertical |
             (1, 0),  // Horizontal -
@@ -102,7 +101,7 @@ pub trait Board {
         output
     }
     fn is_win(&self, player_id: PlayerID) -> bool {
-        let win_coordinates = Self::winning_lines();
+        let win_coordinates = self.winning_lines();
         win_coordinates.iter().any(|line| {
             line.iter().all(|&(col, row)| {
                 self.get_square_value(col, row) == player_id
@@ -111,7 +110,7 @@ pub trait Board {
     }
     fn is_draw(&self) -> bool { !Self::any_valid_actions(self) }
     fn terminated(&self) -> bool {
-        self.is_draw() || Self::get_players().iter().any(|&player_id| self.is_win(player_id))
+        self.is_draw() || self.get_players().iter().any(|&player_id| self.is_win(player_id))
     }
 
 }

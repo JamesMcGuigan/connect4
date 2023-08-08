@@ -24,7 +24,7 @@ impl BoardArray {
 
     #[requires((0..MAX_COLS).contains(&col))]
     #[requires((0..MAX_ROWS).contains(&row))]
-    #[requires([0,1,2].contains(&row))]
+    #[requires([0,1,2].contains(&value))]
     fn set_index(&self, col: GameCol, row: GameRow, value: PlayerID) -> ObservationArray {
         let mut board = self.board;
         let index = Self::get_index(col, row);
@@ -33,22 +33,30 @@ impl BoardArray {
     }
 }
 
-impl Board for BoardArray
-{
-    fn from_observation(observation: Observation) -> Self {
+impl From<Observation> for BoardArray {
+    fn from(observation: Observation) -> Self {
         let board = BoardArray {
-            board:         observation.board,
-            move_number:   observation.step,
-            player_id:     observation.mark,
-            // observation:   observation.clone(),
-            // configuration
+            board:       observation.board,
+            move_number: observation.step,
+            player_id:   observation.mark,
+            // other fields if necessary
         };
 
         assert_eq!(board.get_move_number(), observation.step, "board.get_move_number() != observation.step");
         assert_eq!(board.get_move_player(), observation.mark, "board.get_move_player() != observation.mark");
         board
     }
+}
 
+impl From<ObservationArray> for BoardArray {
+    fn from(input: ObservationArray) -> Self {
+        let observation = Observation::from(input);
+        BoardArray::from(observation)
+    }
+}
+
+impl Board for BoardArray
+{
     fn get_move_number(&self) -> u8 {
         self.board.iter()
             .filter(|&square| { *square != 0 as PlayerID })
@@ -61,19 +69,19 @@ impl Board for BoardArray
     }
 
     #[requires(self.is_valid_action(action))]
-    fn step(&self, action: GameCol) -> Self {
+    fn step(&self, action: GameCol) -> Box<(dyn Board + 'static)> {
         let board = self.set_index(
             action,
             self.get_row(action).unwrap(),
             self.get_move_player()
         );
-        BoardArray {
+        Box::new(BoardArray {
             board,
             move_number: self.get_move_number() + 1,
             player_id:   self.get_next_player(),
             // observation:   self.observation.clone(),
             // configuration: self.configuration.clone(),
-        }
+        })
     }
 }
 
