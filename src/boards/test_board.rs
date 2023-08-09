@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
-    use crate::boards::{Board, BoardArray};
+    use crate::boards::{Board, BoardArray, BoardVector};
     use crate::boards::board::GameCol;
     use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID};
     use crate::inputs::ObservationArray;
@@ -11,7 +11,7 @@ mod tests {
         let observation = Observation::from(value);
         let iter = vec![
             Box::new(BoardArray::from(  observation.clone())) as Box<dyn Board>,
-            // Box::new(BoardVector::from( observation.clone())) as Box<dyn Board>,
+            Box::new(BoardVector::from( observation.clone())) as Box<dyn Board>,
             // Box::new(BoardBitmask::from(observation.clone())) as Box<dyn Board>,
         ];
         iter.into_iter()
@@ -222,7 +222,7 @@ mod tests {
     #[rstest(name, observation, winner)]
     #[case("empty",                fixture_observation_empty(),                0)]
     #[case("col1",                 fixture_observation_col_1(),                0)]
-    #[case("draw",                 fixture_observation_draw(),                 0)]    
+    #[case("draw",                 fixture_observation_draw(),                 0)]
     #[case("win_p1_horizontal",    fixture_observation_win_p1_horizontal(),    1)]
     #[case("win_p2_vertical",      fixture_observation_win_p2_vertical(),      2)]
     #[case("win_p1_diagonal_down", fixture_observation_win_p1_diagonal_down(), 1)]
