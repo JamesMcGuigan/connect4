@@ -25,7 +25,8 @@ opt-level     = 3   # optimization for speed
 opt-level = 3  # Optimize dependencies in Development mode - they don't change often
 
 [profile.dev]
-opt-level = 1  # Turn on a small amount of optimisation in Development mode.
+opt-level = 0    # Turn off optimisation in Development mode.
+# opt-level = 1  # Turn on a small amount of optimisation in Development mode.
 
 
 [dependencies]
@@ -35,3 +36,6 @@ thiserror = "1.0.0"
 anyhow = "1.0.51"
 pyo3 = { version = "0.16.5", features = ["extension-module"] }
 contracts = "0.6.3"
+
+[dev-dependencies]
+rstest = "0.18.1"

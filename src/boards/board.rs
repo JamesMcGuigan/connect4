@@ -1,7 +1,7 @@
 use std::ops::Range;
-use crate::inputs::{MAX_COLS, MAX_ROWS, INAROW};  // Observation, Configuration
-use crate::inputs::observation::PlayerID;
 
+use crate::inputs::{INAROW, MAX_COLS, MAX_ROWS};
+use crate::inputs::observation::PlayerID;
 
 pub type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
 pub type GameCol  = u8;    // CONTRACT: 0 .. Self::get_config().columns
@@ -42,14 +42,14 @@ pub trait Board {
 
     // Validation Functions
 
-    fn is_valid_action(&self, action: GameRow) -> bool {
-        (0..MAX_COLS as GameRow).contains(&action) && self.is_square_empty(action, 0)
+    fn is_valid_action(&self, action: GameCol) -> bool {
+        (0..MAX_COLS as GameCol).contains(&action) && self.is_square_empty(action, 0)
     }
     fn any_valid_actions(&self) -> bool {
         self.get_possible_actions()
-            .any(|action| { !self.is_valid_action(action) })
+            .any(|action| { self.is_valid_action(action) })
     }
-    fn get_valid_actions(&self) -> Vec<GameRow> {
+    fn get_valid_actions(&self) -> Vec<GameCol> {
         self.get_possible_actions()
             .filter(|action| { self.is_valid_action(*action) })
             .collect()
@@ -73,27 +73,27 @@ pub trait Board {
         ];
         let mut output: Vec<GameLine> = Vec::new();
 
-        // Loop over each starting square on the board
-        for start_col in 0..MAX_COLS as GameCol {
+        for direction in &directions {
+            // Loop over each starting square on the board
             for start_row in 0..MAX_ROWS as GameRow {
+                for start_col in 0..MAX_COLS as GameCol {
 
-                // Collect Vec<GameLine> from each direction, excluding coordinate out-of-bounds
-                'direction: for direction in &directions {
                     let mut line = Vec::new();
                     for offset in 0..INAROW as GameRow {
                         // i8 required for -1 negative out-of-bounds values
-                        let col: i8 = start_col as i8 + offset as i8 * direction.0;
-                        let row: i8 = start_row as i8 + offset as i8 * direction.1;
+                        let col: i8 = start_col as i8 + (direction.0 * offset as i8);
+                        let row: i8 = start_row as i8 + (direction.1 * offset as i8);
                         if (0..MAX_COLS as i8).contains(&col) &&
                            (0..MAX_ROWS as i8).contains(&row)
                         {
                             line.push((col as GameCol, row as GameRow));
                         } else {
-                            break 'direction;  // Out-of-Bounds = Discard Line
+                            break;  // then: line.len() != INAROW
                         }
                     }
-                    assert_eq!(line.len(), INAROW as usize, "line.len() != INAROW");
-                    output.push(line);  // Only add if we didn't break 'direction
+                    if line.len() == INAROW as usize {
+                        output.push(line);  // Only add if we have a full line
+                    }
                 }
 
             }
@@ -113,4 +113,12 @@ pub trait Board {
         self.is_draw() || self.get_players().iter().any(|&player_id| self.is_win(player_id))
     }
 
+    fn to_string(&self) -> String {
+        (0..MAX_ROWS).map(|row|
+            (0..MAX_COLS)
+                .map(|col| self.get_square_value(col, row).to_string() )
+                .collect::<String>())
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
 }
