@@ -2,12 +2,14 @@
 #![allow(dead_code)]
 
 use contracts::requires;
+
 use crate::boards::Board;
 use crate::boards::board::{GameCol, GameRow};
+use crate::boards::lines::connect4_line_bitmasks;
 use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID};
 
 // Bitmask = [u42;BITS_PLAYED] + [u42;BITS_PLAYER]
-type Bitmask = u128;  // 7*6 == 42 * 2 bits (board + player bit) == 84 bits
+pub type Bitmask = u128;  // 7*6 == 42 * 2 bits (board + player bit) == 84 bits
 const BITS_PLAYED: usize = 0;
 const BITS_PLAYER: usize = (MAX_COLS * MAX_ROWS) as usize;
 
@@ -85,13 +87,26 @@ impl Board for BoardBitmask
             .count() as u8
     }
 
-    // Faster implementation than: get_square_value(col, row) == 0
+    /// @Optimization
+    /// Check if all played_bit's are set on top row
+    /// assert all self.board[0..MAX_COLS][0] == 1
+    fn any_valid_actions(&self) -> bool {
+        let moves_bitmask: Bitmask = (0..MAX_COLS as usize)
+            .map(|col| 1 << (col + BITS_PLAYED))
+            .sum()  // 0b1111111 == 0x7F == 127
+        ;
+        self.board & moves_bitmask != moves_bitmask
+    }
+
+    /// @Optimization
+    /// Check if the played_bit for a given index is set
     fn is_square_empty(&self, col: GameCol, row: GameRow) -> bool {
         let index = (col + row*MAX_COLS) as usize;
         let played_bit = self.board & (1 << (index + BITS_PLAYED));
         played_bit == 0
     }
 
+    #[allow(clippy::needless_return)]
     fn get_square_value(&self, col: GameCol, row: GameRow) -> PlayerID {
         let index = (col + row*MAX_COLS) as usize;
         let played_bit = self.board & (1 << (index + BITS_PLAYED));
@@ -110,7 +125,22 @@ impl Board for BoardBitmask
         Box::new(Self {
             board:       bitboard,
             move_number: self.move_number + 1,
-            player_id:   self.player_id,
+            player_id:   self.get_next_player(),
         })
+    }
+
+    /// @Optimization
+    /// Loop over winning_bitmasks() and check: bits_played[] == 1 & bits_player[] == player_id
+    fn is_win(&self, player_id: PlayerID) -> bool {
+        let lines = connect4_line_bitmasks();
+        for line in lines {
+            // if all bits_played are set
+            if (self.board >> BITS_PLAYED) & line == line {
+                // if all bits_player == player_id
+                if player_id == 1 && (self.board >> BITS_PLAYER) & line == 0    { return true; }
+                if player_id == 2 && (self.board >> BITS_PLAYER) & line == line { return true; }
+            }
+        }
+        false
     }
 }

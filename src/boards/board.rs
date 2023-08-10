@@ -1,11 +1,12 @@
 use std::ops::Range;
+use crate::boards::lines::connect4_lines;
 
-use crate::inputs::{INAROW, MAX_COLS, MAX_ROWS};
+use crate::inputs::{MAX_COLS, MAX_ROWS};
 use crate::inputs::observation::PlayerID;
 
 pub type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
 pub type GameCol  = u8;    // CONTRACT: 0 .. Self::get_config().columns
-type GameLine = Vec<(GameCol, GameRow)>;
+
 
 pub trait Board {
     // fn from_observation(observation: Observation, configuration: Configuration) -> Self;
@@ -64,45 +65,9 @@ pub trait Board {
 
     // Game Termination Functions
 
-    fn winning_lines(&self) -> Vec<GameLine> {
-        let directions: Vec<(i8, i8)> = vec![
-            (0, 1),  // Vertical |
-            (1, 0),  // Horizontal -
-            (1, 1),  // Diagonal \
-            (1, -1), // Diagonal /
-        ];
-        let mut output: Vec<GameLine> = Vec::new();
-
-        for direction in &directions {
-            // Loop over each starting square on the board
-            for start_row in 0..MAX_ROWS as GameRow {
-                for start_col in 0..MAX_COLS as GameCol {
-
-                    let mut line = Vec::new();
-                    for offset in 0..INAROW as GameRow {
-                        // i8 required for -1 negative out-of-bounds values
-                        let col: i8 = start_col as i8 + (direction.0 * offset as i8);
-                        let row: i8 = start_row as i8 + (direction.1 * offset as i8);
-                        if (0..MAX_COLS as i8).contains(&col) &&
-                           (0..MAX_ROWS as i8).contains(&row)
-                        {
-                            line.push((col as GameCol, row as GameRow));
-                        } else {
-                            break;  // then: line.len() != INAROW
-                        }
-                    }
-                    if line.len() == INAROW as usize {
-                        output.push(line);  // Only add if we have a full line
-                    }
-                }
-
-            }
-        }
-        output
-    }
     fn is_win(&self, player_id: PlayerID) -> bool {
-        let win_coordinates = self.winning_lines();
-        win_coordinates.iter().any(|line| {
+        let lines = connect4_lines();
+        lines.iter().any(|line| {
             line.iter().all(|&(col, row)| {
                 self.get_square_value(col, row) == player_id
             })

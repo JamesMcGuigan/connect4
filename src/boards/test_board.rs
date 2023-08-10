@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
-    use crate::boards::{Board, BoardArray, BoardVector};
+    use crate::boards::{Board, BoardArray, BoardBitmask, BoardVector};
     use crate::boards::board::GameCol;
+    use crate::boards::lines::connect4_lines;
     use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID};
     use crate::inputs::ObservationArray;
 
@@ -12,7 +13,7 @@ mod tests {
         let iter = vec![
             Box::new(BoardArray::from(  observation.clone())) as Box<dyn Board>,
             Box::new(BoardVector::from( observation.clone())) as Box<dyn Board>,
-            // Box::new(BoardBitmask::from(observation.clone())) as Box<dyn Board>,
+            Box::new(BoardBitmask::from(observation.clone())) as Box<dyn Board>,
         ];
         iter.into_iter()
     }
@@ -236,8 +237,8 @@ mod tests {
                 println!("{}", name);
                 println!("is_win(p1) = {} | is_win(p2) = {} | is_draw() = {}", board.is_win(1), board.is_win(2), board.is_draw());
                 println!("{}", board.to_string());
-                let win_coordinates = board.winning_lines();
-                win_coordinates.iter().for_each(|line| {
+                let lines = connect4_lines();
+                lines.iter().for_each(|line| {
                     let line_values = line.iter()
                         .map(|&(col, row)| { board.get_square_value(col, row) })
                         .collect::<Vec<PlayerID>>()

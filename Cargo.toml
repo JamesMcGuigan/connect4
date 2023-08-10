@@ -36,6 +36,7 @@ thiserror = "1.0.0"
 anyhow = "1.0.51"
 pyo3 = { version = "0.16.5", features = ["extension-module"] }
 contracts = "0.6.3"
+cached = "0.44.0"
 
 [dev-dependencies]
 rstest = "0.18.1"

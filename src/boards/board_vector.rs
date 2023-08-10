@@ -2,9 +2,10 @@
 #![allow(dead_code)]
 
 use contracts::requires;
+
 use crate::boards::Board;
 use crate::boards::board::{GameCol, GameRow};
-use crate::inputs::{Configuration, Observation, PlayerID, MAX_COLS, MAX_ROWS};
+use crate::inputs::{Configuration, MAX_COLS, MAX_ROWS, Observation, PlayerID};
 
 pub struct BoardVector {
     board: Vec<Vec<PlayerID>>,
@@ -13,12 +14,13 @@ pub struct BoardVector {
 }
 
 impl From<Observation> for BoardVector {
+    #[allow(clippy::needless_range_loop)]
     fn from(observation: Observation) -> Self {
         // cast: [u8;42] -> board[col][row]
         let mut board: Vec<Vec<PlayerID>> = vec![vec![0; MAX_ROWS as usize]; MAX_COLS as usize];
         for col in 0..MAX_COLS as usize {
             for row in 0..MAX_ROWS as usize {
-                let index = (col) + (row * MAX_COLS as usize);
+                let index = col + (row * MAX_COLS as usize);
                 board[col][row] = observation.board[index];
             }
         }
