@@ -116,17 +116,19 @@ impl Board for BoardBitmask
         else if player_bit == 0 { return 1; } else { return 2; }
     }
 
-    fn step(&self, action: GameCol) -> Box<(dyn Board)> {
+    fn step(&self, action: GameCol) -> Option<Box<(dyn Board)>> {
+        if !self.is_valid_action(action) { return None; }
+
         let bitboard = self.set_index(
             action,
             self.get_row(action).unwrap(),
             self.player_id
         );
-        Box::new(Self {
+        Some(Box::new(Self {
             board:       bitboard,
             move_number: self.move_number + 1,
             player_id:   self.get_next_player(),
-        })
+        }))
     }
 
     /// @Optimization

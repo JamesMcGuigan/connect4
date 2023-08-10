@@ -104,7 +104,7 @@ mod tests {
             for action in 0..MAX_COLS {
                 expected_move  += 1;
                 expected_player = board.get_next_player();
-                board           = board.step(action);
+                board           = board.step(action).unwrap();
                 assert_eq!(board.get_move_number(), expected_move);
                 assert_eq!(board.get_move_player(), expected_player);
                 assert_ne!(board.get_move_player(), board.get_next_player());
@@ -285,7 +285,7 @@ mod tests {
             for &action in &actions {
                 assert!( !board.terminated(), "!board.terminated()");
                 assert!(  board.is_valid_action(action), "board.is_valid_action({})", action);
-                board = board.step(action);
+                board = board.step(action).unwrap();
 
                 if DEBUG { println!("player = {} | action = {} | board \n{}", board.get_next_player(), action, board.to_string()) }
             }

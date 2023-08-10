@@ -1,7 +1,7 @@
 use std::ops::Range;
 use crate::boards::lines::connect4_lines;
 
-use crate::inputs::{MAX_COLS, MAX_ROWS};
+use crate::inputs::{MAX_COLS, MAX_ROWS, ObservationArray};
 use crate::inputs::observation::PlayerID;
 
 pub type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
@@ -60,7 +60,7 @@ pub trait Board {
     /// Not object-safe to define in Trait, requires Struct specific functions
     /// CONTRACT: action <= Self::get_config().columns
     /// CONTRACT: self.is_valid_action(action)
-    fn step(&self, action: GameCol) -> Box<dyn Board>;
+    fn step(&self, action: GameCol) -> Option<Box<dyn Board>>;
 
 
     // Game Termination Functions
@@ -85,5 +85,16 @@ pub trait Board {
                 .collect::<String>())
             .collect::<Vec<_>>()
             .join("\n")
+    }
+
+    fn to_array(&self) -> ObservationArray {
+        let mut array = [0; (MAX_COLS * MAX_ROWS) as usize];
+        for row in 0..MAX_ROWS {
+            for col in 0..MAX_COLS {
+                let index = (col + (row * MAX_COLS)) as usize;
+                array[index] = self.get_square_value(col, row);
+            }
+        }
+        array
     }
 }

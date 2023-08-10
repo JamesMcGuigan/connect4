@@ -68,20 +68,27 @@ impl Board for BoardArray
         self.board[index]
     }
 
-    #[requires(self.is_valid_action(action))]
-    fn step(&self, action: GameCol) -> Box<(dyn Board + 'static)> {
+    // #[requires(self.is_valid_action(action))]
+    fn step(&self, action: GameCol) -> Option<Box<(dyn Board)>> {
+        if !self.is_valid_action(action) { return None; }
+
         let board = self.set_index(
             action,
             self.get_row(action).unwrap(),
             self.get_move_player()
         );
-        Box::new(BoardArray {
+        Some(Box::new(BoardArray {
             board,
             move_number: self.get_move_number() + 1,
             player_id:   self.get_next_player(),
             // observation:   self.observation.clone(),
             // configuration: self.configuration.clone(),
-        })
+        }))
+    }
+
+    /// @Optimization
+    fn to_array(&self) -> ObservationArray {
+        self.board
     }
 }
 

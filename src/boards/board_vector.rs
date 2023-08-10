@@ -55,20 +55,22 @@ impl Board for BoardVector
         self.board[col as usize][row as usize]
     }
 
-    #[requires(self.is_valid_action(action))]
-    fn step(&self, action: GameCol) -> Box<(dyn Board)> {
+    // #[requires(self.is_valid_action(action))]
+    fn step(&self, action: GameCol) -> Option<Box<(dyn Board)>> {
+        if !self.is_valid_action(action) { return None; }
+
         let col = action as usize;
         let row = self.get_row(action).unwrap() as usize;
         let player_id = self.get_move_player();
         let mut board = self.board.clone();
         board[col][row] = player_id;
 
-        Box::new(Self {
+        Some(Box::new(Self {
             board,
             move_number: self.get_move_number() + 1,
             player_id:   self.get_next_player(),
             // observation:   self.observation.clone(),
             // configuration: self.configuration.clone(),
-        })
+        }))
     }
 }
