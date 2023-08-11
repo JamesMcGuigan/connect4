@@ -15,7 +15,7 @@ from kaggle_environments import structify
 
 ### Kaggle Agent Function
 def kaggle_agent(obs, conf):
-    if '__raw_path__' in conf: del conf['__raw_path__']
+    if '__raw_path__' in conf: del conf['__raw_path__']  # __raw_path__ removed from Observation.rs
     action = submission_agent(obs, conf)  # agent.py
     return action
 
