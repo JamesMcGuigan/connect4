@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
+use crate::agents::agent_mirror::agent_mirror;
 use crate::agents::agent_modulo::agent_modulo;
 use crate::agents::agent_random::agent_random;
 use crate::inputs::{Configuration, Observation};
@@ -17,6 +18,7 @@ fn module_with_functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Observation>()?;
     m.add_class::<Configuration>()?;
 
+    m.add_wrapped(wrap_pyfunction!(agent_mirror))?;
     m.add_wrapped(wrap_pyfunction!(agent_random))?;
     m.add_wrapped(wrap_pyfunction!(agent_modulo))?;
     Ok(())
