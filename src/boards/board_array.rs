@@ -5,7 +5,7 @@ use crate::boards::board::{Board, GameCol, GameRow};
 use crate::inputs::{Observation, ObservationArray, PlayerID};
 use crate::inputs::{MAX_COLS, MAX_ROWS};
 
-
+/// Simplest implementation of Board using a 1D Array + move_number + player_id
 pub struct BoardArray {
     board: ObservationArray,
     move_number:   u8,
@@ -57,11 +57,10 @@ impl From<ObservationArray> for BoardArray {
 
 impl Board for BoardArray
 {
-    fn get_move_number(&self) -> u8 {
-        self.board.iter()
-            .filter(|&square| { *square != 0 as PlayerID })
-            .count() as u8
-    }
+    // Move + Player values stored in struct at step() avoiding recalculation
+    fn get_move_number(&self) -> u8 { self.move_number }
+    fn get_move_player(&self) -> PlayerID { self.player_id }   // struct rather than re-calculate
+
 
     fn get_square_value(&self, col: GameCol, row: GameRow) -> PlayerID {
         let index = Self::get_index(col, row);

@@ -13,10 +13,11 @@ pub type Bitmask = u128;  // 7*6 == 42 * 2 bits (board + player bit) == 84 bits
 const BITS_PLAYED: usize = 0;
 const BITS_PLAYER: usize = (MAX_COLS * MAX_ROWS) as usize;
 
+/// Stores a Connect4 board using only u128 Bitmask
 pub struct BoardBitmask {
     board: Bitmask,
-    move_number: u8,
-    player_id:   u8,
+    // move_number: u8,  // recompute from board
+    // player_id:   u8,  // recompute from board
 }
 
 impl BoardBitmask {
@@ -68,8 +69,8 @@ impl From<Observation> for BoardBitmask {
 
         let board = BoardBitmask {
             board:       bitboard,
-            move_number: observation.step,
-            player_id:   observation.mark,
+            // move_number: observation.step,
+            // player_id:   observation.mark,
         };
 
         assert_eq!(board.get_move_number(), observation.step, "board.get_move_number() != observation.step");
@@ -122,12 +123,12 @@ impl Board for BoardBitmask
         let bitboard = self.set_index(
             action,
             self.get_row(action).unwrap(),
-            self.player_id
+            self.get_move_player()
         );
         Some(Box::new(Self {
             board:       bitboard,
-            move_number: self.move_number + 1,
-            player_id:   self.get_next_player(),
+            // move_number: self.move_number + 1,
+            // player_id:   self.get_next_player(),
         }))
     }
 

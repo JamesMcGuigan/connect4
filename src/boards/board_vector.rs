@@ -7,10 +7,12 @@ use crate::boards::Board;
 use crate::boards::board::{GameCol, GameRow};
 use crate::inputs::{Configuration, MAX_COLS, MAX_ROWS, Observation, PlayerID};
 
+/// Similar to BoardArray but uses a 2D Vec rather than a 1D Array
+/// move_number + player_id are recomputed from board without struct storage
 pub struct BoardVector {
     board: Vec<Vec<PlayerID>>,
-    move_number: u8,
-    player_id:   u8,
+    // move_number: u8,
+    // player_id:   u8,
 }
 
 impl From<Observation> for BoardVector {
@@ -26,8 +28,8 @@ impl From<Observation> for BoardVector {
         }
         BoardVector {
             board,
-            move_number: observation.step,
-            player_id:   observation.mark,
+            // move_number: observation.step,
+            // player_id:   observation.mark,
         }
     }
 }
@@ -35,19 +37,20 @@ impl From<Observation> for BoardVector {
 impl Board for BoardVector
 {
     fn get_move_number(&self) -> u8 {
-        // return self.board.iter()
-        //     .map(|row|
-        //         row.iter()
-        //             .filter(|&&x| x != 0)
-        //             .count() as u8
-        //     )
-        //     .sum();
+        // self.board.iter()
+        //     .flatten()
+        //     .filter(|&&x| x != 0)
+        //     .count() as u8
 
-        return self.board.iter()
-            .flatten()
-            .filter(|&&x| x != 0)
-            .count() as u8;
+        self.board.iter()
+            .map(|row|
+                row.iter()
+                    .filter(|&&x| x != 0)
+                    .count() as u8
+            )
+            .sum()
     }
+
 
     #[requires((0..MAX_COLS).contains(&col))]
     #[requires((0..MAX_ROWS).contains(&row))]
@@ -67,8 +70,8 @@ impl Board for BoardVector
 
         Some(Box::new(Self {
             board,
-            move_number: self.get_move_number() + 1,
-            player_id:   self.get_next_player(),
+            // move_number: self.get_move_number() + 1,
+            // player_id:   self.get_next_player(),
             // observation:   self.observation.clone(),
             // configuration: self.configuration.clone(),
         }))

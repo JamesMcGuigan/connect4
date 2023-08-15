@@ -7,7 +7,10 @@ use crate::inputs::observation::PlayerID;
 pub type GameRow  = u8;    // CONTRACT: 0 .. Self::get_config().rows
 pub type GameCol  = u8;    // CONTRACT: 0 .. Self::get_config().columns
 
-
+/// Three implementations of Board
+/// 1. BoardArray:    stores 1d [u8;42] stack Array + move_number + player_id
+/// 2. BoardVec:      stores 2d Vec<Vec<u8>> (computes move_number + player_id)
+/// 3. BoardBitmask:  stores u128 Bitmask    (computes move_number + player_id)
 pub trait Board {
     // fn from_observation(observation: Observation, configuration: Configuration) -> Self;
     // fn from_observation(observation: Observation) -> Self;
