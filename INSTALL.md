@@ -49,3 +49,10 @@ Test Python
 python3 ./python/main.py
 python3 ./python/test.py
 ```
+
+Cargo Size
+```
+cargo install cargo-binutils
+rustup component add llvm-tools-preview
+cargo size --release --lib
+```
