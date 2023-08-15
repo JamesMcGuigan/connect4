@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
+use parking_lot::Mutex;
 use pyo3::prelude::*;
 
 use crate::agents::agent_random::agent_random;
@@ -8,12 +9,19 @@ use crate::boards::{Board, BoardArray};
 use crate::boards::board::GameCol;
 use crate::inputs::{Configuration, MAX_COLS, Observation};
 
-// FIX: parking_lot::Mutex doesn't require unwrap()
-// BUG: thread 'agents::agent_mirror::test::test_move_0' panicked at 'called `Result::unwrap()` on an `Err` value: PoisonError { .. }', src/agents/agent_mirror.rs:88:24
-lazy_static! {
-    static ref HISTORY: parking_lot::Mutex<HashMap<u8, Vec<Observation>>>
-                        = parking_lot::Mutex::new(HashMap::new());
-}
+//// BUG: thread 'agents::agent_mirror::test::test_move_0' panicked at 'called `Result::unwrap()` on an `Err` value: PoisonError { .. }', src/agents/agent_mirror.rs:88:24
+//// FIX: parking_lot::Mutex doesn't require unwrap()
+//// Alternative Macro Implementation
+// lazy_static! {
+//     static ref HISTORY: parking_lot::Mutex<HashMap<u8, Vec<Observation>>>
+//                         = parking_lot::Mutex::new(HashMap::new());
+// }
+//// once_cell::sync::Lazy is more robust against multi-threaded race conditions than lazy_static!
+static HISTORY: Lazy<Mutex<HashMap<u8, Vec<Observation>>>> = Lazy::new(|| {
+    Mutex::new(HashMap::new())
+});
+
+
 
 /// This is an inefficient brute-force 2-deep search
 /// Find our + opponent's action to step() into the current board
@@ -88,7 +96,9 @@ pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Opti
 #[cfg(test)]
 mod test {
     use serial_test::serial;
+
     use crate::inputs::MAX_ROWS;
+
     use super::*;
 
     fn clear_history() {
