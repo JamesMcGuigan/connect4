@@ -38,6 +38,7 @@ pyo3 = { version = "0.16.5", features = ["extension-module"] }
 contracts = "0.6.3"
 cached = "0.44.0"
 lazy_static = "1.4.0"
+parking_lot = "0.12.1"
 
 [dev-dependencies]
 rstest = "0.18.1"

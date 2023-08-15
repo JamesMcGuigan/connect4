@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::sync::Mutex;
 
 use lazy_static::lazy_static;
 use pyo3::prelude::*;
@@ -9,8 +8,11 @@ use crate::boards::{Board, BoardArray};
 use crate::boards::board::GameCol;
 use crate::inputs::{Configuration, Observation, MAX_COLS};
 
+// FIX: parking_lot::Mutex doesn't require unwrap()
+// BUG: thread 'agents::agent_mirror::test::test_move_0' panicked at 'called `Result::unwrap()` on an `Err` value: PoisonError { .. }', src/agents/agent_mirror.rs:88:24
 lazy_static! {
-    static ref HISTORY: Mutex<HashMap<u8, Vec<Observation>>> = Mutex::new(HashMap::new());
+    static ref HISTORY: parking_lot::Mutex<HashMap<u8, Vec<Observation>>>
+                        = parking_lot::Mutex::new(HashMap::new());
 }
 
 /// This is an inefficient brute-force 2-deep search
@@ -43,7 +45,7 @@ fn get_opponent_action(obs: Observation, last_obs: Option<Observation>) -> Optio
 #[pyfunction]
 pub fn agent_mirror(obs: Observation, conf: Configuration) -> u8 {
     // hold history_lock until end-of-scope GC
-    let mut history_lock = HISTORY.lock().unwrap();
+    let mut history_lock = HISTORY.lock();
 
     // Extract .last() Observation from HISTORY
     let last_obs = history_lock
@@ -85,7 +87,7 @@ mod test {
     use super::*;
 
     fn clear_history() {
-        HISTORY.lock().unwrap().clear();
+        HISTORY.lock().clear();
     }
 
     /// assert get_opponent_action(*, None) == Some(*) not None for all 0..MAX_COLS
@@ -154,18 +156,18 @@ mod test {
         const MIRROR_MOVES: [(GameCol, GameCol); 7] = [ (0,6), (1,5), (2,4), (3,3), (4,2), (5,1), (6,0) ];
         for (action_p1, action_p2) in  MIRROR_MOVES {
             clear_history();
-            assert_eq!(HISTORY.lock().unwrap().len(), 0, "HISTORY.len() != 0");
+            assert_eq!(HISTORY.lock().len(), 0, "HISTORY.len() != 0");
 
             // step action_p1 (without HISTORY); assert agent_mirror() == action_p2 mirror move
             let mut obs= Observation::default().step(action_p1);
             let mut action = agent_mirror(obs.clone(), Configuration::default());
-            assert_eq!(HISTORY.lock().unwrap().len(), 1, "HISTORY.len() != 1");
+            assert_eq!(HISTORY.lock().len(), 1, "HISTORY.len() != 1");
             assert_eq!(action, action_p2, "{} mirrors {}", action_p1, action_p2);
     
             // step action_p2 (with HISTORY); assert agent_mirror() == action_p1 mirror move
             obs    = obs.step(action_p2);
             action = agent_mirror(obs.clone(), Configuration::default());
-            assert_eq!(HISTORY.lock().unwrap().len(), 2, "HISTORY.len() != 2");
+            assert_eq!(HISTORY.lock().len(), 2, "HISTORY.len() != 2");
             assert_eq!(action, action_p1, "{} mirrors {}", action_p1, action_p2);
         }
     }

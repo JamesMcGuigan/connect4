@@ -188,6 +188,7 @@ dependencies = [
  "cffi",
  "contracts",
  "lazy_static",
+ "parking_lot",
  "pyo3",
  "rand 0.8.5",
  "rstest",
