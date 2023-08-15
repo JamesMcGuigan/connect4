@@ -6,7 +6,7 @@ use pyo3::prelude::*;
 use crate::agents::agent_random::agent_random;
 use crate::boards::{Board, BoardArray};
 use crate::boards::board::GameCol;
-use crate::inputs::{Configuration, Observation, MAX_COLS};
+use crate::inputs::{Configuration, MAX_COLS, Observation};
 
 // FIX: parking_lot::Mutex doesn't require unwrap()
 // BUG: thread 'agents::agent_mirror::test::test_move_0' panicked at 'called `Result::unwrap()` on an `Err` value: PoisonError { .. }', src/agents/agent_mirror.rs:88:24
@@ -87,6 +87,7 @@ pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Opti
 
 #[cfg(test)]
 mod test {
+    use serial_test::serial;
     use crate::inputs::MAX_ROWS;
     use super::*;
 
@@ -125,6 +126,7 @@ mod test {
 
     /// assert agent_mirror() == 3 for first move
     #[test]
+    #[serial]  // WORKAROUND: Avoid multi-threaded HISTORY.len() != 0
     fn test_move_0() {
         clear_history();
         let action = agent_mirror(Observation::default(), Configuration::default());
@@ -135,6 +137,7 @@ mod test {
     /// test agent_mirror() starts middle=3, counters middle=3, then detects when column in full
     /// DEBUG shows agent_mirror() plays 3, 3, 3, 3, 3, 3:full, 6:rand, 0:mirror, 6, 0...
     #[test]
+    #[serial]  // WORKAROUND: Avoid multi-threaded HISTORY.len() != 0
     fn test_move_col3() {
         clear_history();
         let mut obs = Observation::default();
@@ -156,6 +159,7 @@ mod test {
     }
 
     #[test]
+    #[serial]  // WORKAROUND: Avoid multi-threaded HISTORY.len() != 0
     fn test_move_mirror() {
         const MIRROR_MOVES: [(GameCol, GameCol); 7] = [ (0,6), (1,5), (2,4), (3,3), (4,2), (5,1), (6,0) ];
         for (action_p1, action_p2) in  MIRROR_MOVES {

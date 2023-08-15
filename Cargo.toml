@@ -39,6 +39,8 @@ contracts = "0.6.3"
 cached = "0.44.0"
 lazy_static = "1.4.0"
 parking_lot = "0.12.1"
+serial_test = "2.0.0"
 
 [dev-dependencies]
 rstest = "0.18.1"
+serial_test = "2.0.0"
