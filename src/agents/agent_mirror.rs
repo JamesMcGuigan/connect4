@@ -61,7 +61,11 @@ pub fn agent_mirror(obs: Observation, conf: Configuration) -> u8 {
     ;
 
     // Actual agent logic
-    agent_mirror_action(obs, conf, last_obs)
+    let action = agent_mirror_action(obs, conf, last_obs);
+
+    // Lock is implicitly dropped at end of scope, but be explicit here
+    drop(history_lock);  // hold lock until after agent_mirror_action()
+    action
 }
 
 pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Option<Observation>) -> u8 {
