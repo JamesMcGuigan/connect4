@@ -9,6 +9,7 @@ use crate::inputs::{Configuration, Observation};
 pub mod agents;
 pub mod inputs;
 pub mod boards;
+pub mod games;
 
 #[pymodule]
 #[pyo3(name = "connectx")]
