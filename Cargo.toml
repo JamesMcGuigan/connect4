@@ -2,12 +2,18 @@
 name = "connectx"
 version = "0.1.0"
 edition = "2021"
+doctest = true    # (implict) cargo test --doc | requires [lib] create-type += rlib
+
 
 # DEFS: https://doc.rust-lang.org/cargo/reference/manifest.html
 # DOCS: https://stackoverflow.com/questions/62838212/whats-the-correct-way-to-compile-maturin-packages
 [lib]
 name = "connectx"
-crate-type = ["cdylib", "staticlib"]
+crate-type = [
+    "rlib",       # creates target/debug/libconnectx.rlib = Rust Library      | required for doctests
+    "staticlib",  # creates target/debug/libconnectx.a    = Static Library    | VERIFY: required for maturin?
+    "cdylib",     # creates target/debug/libconnectx.so   = C Dynamic Library | VERIFY: required for maturin?
+]
 
 
 # DOCS: https://yew.rs/docs/advanced-topics/optimizations
