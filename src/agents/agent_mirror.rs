@@ -22,32 +22,6 @@ static HISTORY: Lazy<Mutex<HashMap<u8, Vec<Observation>>>> = Lazy::new(|| {
 });
 
 
-
-/// This is an inefficient brute-force 2-deep search
-/// Find our + opponent's action to step() into the current board
-fn get_opponent_action(obs: Observation, last_obs: Option<Observation>) -> Option<GameCol> {
-    let start_board = match last_obs {
-        Some(last_obs) => { BoardArray::from(last_obs) }
-        None => { BoardArray::from(Observation::default()) }
-    };
-
-    for action_p1 in 0..MAX_COLS {
-        if let Some(board_p1) = start_board.step(action_p1) {
-            if board_p1.to_array() == obs.board {
-                return Some(action_p1);
-            }
-            for action_p2 in 0..MAX_COLS {
-                if let Some(board_p2) = board_p1.step(action_p2) {
-                    if board_p2.to_array() == obs.board {
-                        return Some(action_p2);
-                    }
-                }
-            }
-        }
-    }
-    None
-}
-
 /// agent_mirror()
 /// Attempt to mirror the opponent's last move, else play 3=middle or agent_random()
 #[pyfunction]
@@ -92,6 +66,31 @@ pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Opti
     action
 }
 
+
+/// This is an inefficient brute-force 2-deep search
+/// Find our + opponent's action to step() into the current board
+fn get_opponent_action(obs: Observation, last_obs: Option<Observation>) -> Option<GameCol> {
+    let start_board = match last_obs {
+        Some(last_obs) => { BoardArray::from(last_obs) }
+        None => { BoardArray::from(Observation::default()) }
+    };
+
+    for action_p1 in 0..MAX_COLS {
+        if let Some(board_p1) = start_board.step(action_p1) {
+            if board_p1.to_array() == obs.board {
+                return Some(action_p1);
+            }
+            for action_p2 in 0..MAX_COLS {
+                if let Some(board_p2) = board_p1.step(action_p2) {
+                    if board_p2.to_array() == obs.board {
+                        return Some(action_p2);
+                    }
+                }
+            }
+        }
+    }
+    None
+}
 
 #[cfg(test)]
 mod test {
