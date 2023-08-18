@@ -16,6 +16,16 @@ const DIRECTIONS: [(i8, i8); 4] = [
 
 /// Returns a list of all possible lines of length INAROW on a connect4 board
 /// [ [(0,0),(0,1),(0,2),(0,3)], ... ]
+/// ```
+/// use std::collections::HashSet;
+/// use connectx::boards::lines::connect4_lines;
+/// use connectx::inputs::INAROW;
+///
+/// let lines = connect4_lines();
+/// assert_eq!( lines.len(), 69, "4×6=24 horizontal + 3×7=21 vertical + (3×4)=12*2=24 diagonal = 69 lines" );
+/// assert_eq!( lines.iter().collect::<HashSet<_>>().len(), 69, "win_lines: no duplicates" );
+/// assert!(    lines.iter().all(|line| line.len() == INAROW as usize), "win_lines: 4 bits in every row" );
+/// ```
 #[once]
 pub fn connect4_lines() -> Vec<GameLine> {
     let mut output: Vec<GameLine> = Vec::new();

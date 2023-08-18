@@ -1,5 +1,4 @@
 #![allow(unused_parens)]
-#![allow(dead_code)]
 
 use contracts::requires;
 
@@ -80,6 +79,7 @@ impl From<Observation> for BoardBitmask {
 }
 
 
+//noinspection RsSortImplTraitMembers
 impl Board for BoardBitmask
 {
     fn get_move_number(&self) -> u8 {
@@ -107,6 +107,7 @@ impl Board for BoardBitmask
         played_bit == 0
     }
 
+    //noinspection RsLift
     #[allow(clippy::needless_return)]
     fn get_square_value(&self, col: GameCol, row: GameRow) -> PlayerID {
         let index = (col + row*MAX_COLS) as usize;

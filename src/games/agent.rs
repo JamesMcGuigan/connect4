@@ -1,8 +1,8 @@
-use crate::games::gameboard::GameBoard;
+use crate::games::gameboards::GameBoard;
 use crate::games::players::PlayerID;
 
 pub trait Agent<T: GameBoard> {
-    fn get_action(
+    fn act(
         &self,
         board: T,
         player: PlayerID,

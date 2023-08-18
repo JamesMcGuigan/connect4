@@ -34,12 +34,12 @@ pub fn agent_mirror(obs: Observation, conf: Configuration) -> u8 {
         .entry(obs.mark)
         .or_insert_with(Vec::new)
         .last()
-        .cloned()  // .map(|obs| obs.clone()) == cast Option<&Observation> -> Option<Observation>
+        .cloned()  // .map(|obs| obs) == cast Option<&Observation> -> Option<Observation>
     ;
     // Add new Observation to HISTORY
     history_lock.entry(obs.mark)
         .or_insert_with(Vec::new)
-        .push(obs.clone())
+        .push(obs)
     ;
 
     // Actual agent logic
@@ -52,7 +52,7 @@ pub fn agent_mirror(obs: Observation, conf: Configuration) -> u8 {
 
 pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Option<Observation>) -> u8 {
     // Find opponent action and counter with mirror move
-    let opponent_action = get_opponent_action(obs.clone(), last_obs);
+    let opponent_action = get_opponent_action(obs, last_obs);
     let mut action = match opponent_action {
         Some(opponent_action) => { (MAX_COLS-1) - opponent_action },  // mirror column
         None => { (MAX_COLS-1) / 2 }                                      // middle column == 3
@@ -61,7 +61,7 @@ pub fn agent_mirror_action(obs: Observation, conf: Configuration, last_obs: Opti
     // Validate this is a legal move, else play random
     let board = BoardArray::from(obs.board);
     while !board.is_valid_action(action) {
-        action = agent_random(obs.clone(), conf.clone());
+        action = agent_random(obs, conf);
     };
     action
 }
@@ -156,7 +156,7 @@ mod test {
 
         // start center 3 + then counter 3 until col is full
         for row in 0..MAX_ROWS*MAX_COLS {
-            let action = agent_mirror(obs.clone(), Configuration::default());
+            let action = agent_mirror(obs, Configuration::default());
             obs = obs.step(action);
 
             const DEBUG: bool = true;
@@ -180,13 +180,13 @@ mod test {
 
             // step action_p1 (without HISTORY); assert agent_mirror() == action_p2 mirror move
             let mut obs= Observation::default().step(action_p1);
-            let mut action = agent_mirror(obs.clone(), Configuration::default());
+            let mut action = agent_mirror(obs, Configuration::default());
             assert_eq!(HISTORY.lock().len(), 1, "HISTORY.len() != 1");
             assert_eq!(action, action_p2, "{} mirrors {}", action_p1, action_p2);
     
             // step action_p2 (with HISTORY); assert agent_mirror() == action_p1 mirror move
             obs    = obs.step(action_p2);
-            action = agent_mirror(obs.clone(), Configuration::default());
+            action = agent_mirror(obs, Configuration::default());
             assert_eq!(HISTORY.lock().len(), 2, "HISTORY.len() != 2");
             assert_eq!(action, action_p1, "{} mirrors {}", action_p1, action_p2);
         }

@@ -1,3 +1,4 @@
+use std::hash::{Hash, Hasher};
 use pyo3::prelude::*;
 
 use crate::boards::Board;
@@ -8,7 +9,7 @@ pub type ObservationArray = [PlayerID; (MAX_COLS * MAX_ROWS) as usize];  // == [
 
 // DOCS: https://pyo3.rs/v0.13.2/class.html
 #[pyclass]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 #[allow(non_snake_case, dead_code)]
 pub struct Observation {
     #[pyo3(get)] pub step: u8,
@@ -16,6 +17,7 @@ pub struct Observation {
     #[pyo3(get)] pub board: ObservationArray,
     #[pyo3(get)] pub remainingOverageTime: f32,
 }
+
 #[pymethods]
 #[allow(non_snake_case, dead_code)]
 impl Observation {
@@ -57,6 +59,18 @@ impl Default for Observation {
         }
     }
 }
+
+impl Eq for Observation {}
+
+impl Hash for Observation {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.step.hash(state);
+        self.mark.hash(state);
+        self.board.hash(state);
+        // self.remainingOverageTime.to_bits().hash(state);  // ignore for hashing
+    }
+}
+
 
 impl From<ObservationArray> for Observation {
     fn from(input: ObservationArray) -> Self {
