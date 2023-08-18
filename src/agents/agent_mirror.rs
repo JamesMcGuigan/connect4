@@ -75,15 +75,18 @@ fn get_opponent_action(obs: Observation, last_obs: Option<Observation>) -> Optio
         None => { BoardArray::from(Observation::default()) }
     };
 
-    for action_p1 in 0..MAX_COLS {
-        if let Some(board_p1) = start_board.step(action_p1) {
-            if board_p1.to_array() == obs.board {
-                return Some(action_p1);
-            }
-            for action_p2 in 0..MAX_COLS {
-                if let Some(board_p2) = board_p1.step(action_p2) {
-                    if board_p2.to_array() == obs.board {
-                        return Some(action_p2);
+    for depth in [1,2] {
+        for action_p1 in 0..MAX_COLS {
+            if let Some(board_p1) = start_board.step(action_p1) {
+                if board_p1.to_array() == obs.board {
+                    return Some(action_p1);
+                }
+                if depth == 1 { continue; }  // check all depth=1 moves before depth=2
+                for action_p2 in 0..MAX_COLS {
+                    if let Some(board_p2) = board_p1.step(action_p2) {
+                        if board_p2.to_array() == obs.board {
+                            return Some(action_p2);
+                        }
                     }
                 }
             }
