@@ -76,4 +76,8 @@ impl Board for BoardVector
             // configuration: self.configuration.clone(),
         }))
     }
+
+    fn huristic_score(&self, _player_id: PlayerID) -> u32 {
+        todo!()
+    }
 }

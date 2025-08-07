@@ -4,6 +4,7 @@ use pyo3::wrap_pyfunction;
 use crate::agents::agent_mirror::agent_mirror;
 use crate::agents::agent_modulo::agent_modulo;
 use crate::agents::agent_random::agent_random;
+use crate::agents::agent_greedy::agent_greedy;
 use crate::inputs::{Configuration, Observation};
 
 pub mod agents;
@@ -22,5 +23,7 @@ fn module_with_functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(agent_mirror))?;
     m.add_wrapped(wrap_pyfunction!(agent_random))?;
     m.add_wrapped(wrap_pyfunction!(agent_modulo))?;
+    m.add_wrapped(wrap_pyfunction!(agent_greedy))?;
+
     Ok(())
 }

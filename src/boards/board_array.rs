@@ -89,6 +89,10 @@ impl Board for BoardArray
     fn to_array(&self) -> ObservationArray {
         self.board
     }
+
+    fn huristic_score(&self, _player_id: PlayerID) -> u32 {
+        todo!()
+    }
 }
 
 

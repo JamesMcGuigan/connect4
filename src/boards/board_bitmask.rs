@@ -4,8 +4,8 @@ use contracts::requires;
 
 use crate::boards::Board;
 use crate::boards::board::{GameCol, GameRow};
-use crate::boards::lines::connect4_line_bitmasks;
-use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID};
+use crate::boards::lines::{connect4_line_bitmasks, connect4_line_bitmasks_inarow};
+use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID, INAROW};
 
 // Bitmask = [u42;BITS_PLAYED] + [u42;BITS_PLAYER]
 pub type Bitmask = u128;  // 7*6 == 42 * 2 bits (board + player bit) == 84 bits
@@ -146,5 +146,32 @@ impl Board for BoardBitmask
             }
         }
         false
+    }
+    
+    fn huristic_score(&self, player_id: PlayerID) -> u32 {
+        let lines = connect4_line_bitmasks();
+        let mut huristic_score = 0;
+        for line in lines {
+            let bits_played = (self.board >> BITS_PLAYED) & line;
+            let bits_player = (self.board >> BITS_PLAYER) & bits_played;
+            let bits_inarow = (self.board >> BITS_PLAYER) | bits_played;
+            
+            // ignore any line containing a mix of enemy pieces
+            if player_id == 1 {        // bits_played = 1111 & bits_player = 0000 & bits_inarow = 1111  
+                if bits_played & bits_player != 0           { huristic_score += 0; continue; }
+            } else { // player_id == 2 // bits_played = 1111 & bits_player = 1111 & bits_inarow = 1111
+                if bits_played & bits_player != bits_played { huristic_score += 0; continue; }
+            }
+
+            for inarow in 1..=INAROW {
+                let inarow_lines = connect4_line_bitmasks_inarow(inarow);
+                for inarow_line in inarow_lines {
+                    if (bits_inarow & inarow_line) == inarow_line {
+                        huristic_score += 10u32.pow(inarow as u32);
+                    }               
+                }                
+            }
+        }
+        return huristic_score;
     }
 }

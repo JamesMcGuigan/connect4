@@ -28,6 +28,10 @@ const DIRECTIONS: [(i8, i8); 4] = [
 /// ```
 #[once]
 pub fn connect4_lines() -> Vec<GameLine> {
+    return connect4_lines_inarow(INAROW);
+}
+
+pub fn connect4_lines_inarow(inarow: u8) -> Vec<GameLine> {
     let mut output: Vec<GameLine> = Vec::new();
     for direction in &DIRECTIONS {
         // Loop over each starting square on the board
@@ -35,7 +39,7 @@ pub fn connect4_lines() -> Vec<GameLine> {
             for start_col in 0..MAX_COLS as GameCol {
 
                 let mut line = Vec::new();
-                for offset in 0..INAROW as GameRow {
+                for offset in 0..inarow as GameRow {
                     // i8 required for -1 negative out-of-bounds values
                     let col: i8 = start_col as i8 + (direction.0 * offset as i8);
                     let row: i8 = start_row as i8 + (direction.1 * offset as i8);
@@ -47,7 +51,7 @@ pub fn connect4_lines() -> Vec<GameLine> {
                         break;  // then: line.len() != INAROW
                     }
                 }
-                if line.len() == INAROW as usize {
+                if line.len() == inarow as usize {
                     output.push(line);  // Only add if we have a full line
                 }
             }
@@ -59,8 +63,11 @@ pub fn connect4_lines() -> Vec<GameLine> {
 /// Convert connect4_lines() into u42 bitmasks
 #[once]
 pub fn connect4_line_bitmasks() -> Vec<Bitmask> {
+    return connect4_line_bitmasks_inarow(INAROW);
+}
+pub fn connect4_line_bitmasks_inarow(inarow:u8) -> Vec<Bitmask> {
     let mut output: Vec<Bitmask> = Vec::new();
-    let lines = connect4_lines();
+    let lines = connect4_lines_inarow(inarow);
     for line in lines {
         let mut bitmask = 0 as Bitmask;
         for (col, row) in line {
