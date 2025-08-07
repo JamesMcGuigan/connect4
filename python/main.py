@@ -15,7 +15,10 @@ from kaggle_environments import structify
 
 ### Kaggle Agent Function
 def kaggle_agent(obs, conf):
+    print('Observation', obs)
+    print('Configuration', conf)
     if '__raw_path__' in conf: del conf['__raw_path__']  # __raw_path__ removed from Observation.rs
+    if 'seed'         in conf: del conf['seed']          # TypeError: Configuration.__new__() got an unexpected keyword argument 'seed'\n`
     action = submission_agent(obs, conf)  # agent.py
     return action
 

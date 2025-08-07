@@ -1,5 +1,6 @@
 [project]
 name = "connectx"
+version = "0.1.0"  # You need to specify either `project.version` or `project.dynamic = ["version"]` in pyproject.toml.
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Rust",
