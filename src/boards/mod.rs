@@ -4,6 +4,7 @@ mod board_bitmask;
 mod board_vector;
 mod test_board;
 pub mod lines;
+mod test_board_bitmask;
 
 pub use board::Board;
 pub use board_array::BoardArray;
