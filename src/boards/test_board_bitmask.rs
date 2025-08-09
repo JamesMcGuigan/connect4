@@ -74,6 +74,20 @@ mod tests {
     }
 
     #[test]
+    fn test_huristic_corner_wall_1b() {
+        let observation_array: ObservationArray = [
+            0, 1, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0,
+            2, 1, 0, 0, 0, 0, 0,
+        ];
+        let board = BoardBitmask::from(Observation::from(observation_array));
+        assert_eq!(board.huristic_score(1), 1);
+    }
+
+    #[test]
     fn test_huristic_corner_wall_2() {
         let observation_array: ObservationArray = [
             0, 2, 0, 0, 0, 0, 0,
