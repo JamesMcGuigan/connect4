@@ -5,6 +5,15 @@ use crate::boards::Board;
 use crate::inputs::{MAX_COLS, MAX_ROWS};
 
 pub type PlayerID = u8;
+#[inline(always)]
+pub const fn get_opponent_id(id: PlayerID) -> Option<PlayerID> {
+    match id {
+        1 => Some(2),
+        2 => Some(1),
+        _ => None,
+    }
+}
+
 pub type ObservationArray = [PlayerID; (MAX_COLS * MAX_ROWS) as usize];  // == [u8;42]
 
 // DOCS: https://pyo3.rs/v0.13.2/class.html

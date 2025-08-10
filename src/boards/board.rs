@@ -101,4 +101,6 @@ pub trait Board {
         array
     }
     fn huristic_score(&self, player_id: PlayerID) -> u32;
+
+    fn huristic_score_player(&self, player_id: PlayerID) -> u32;
 }

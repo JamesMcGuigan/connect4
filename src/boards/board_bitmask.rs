@@ -6,6 +6,7 @@ use crate::boards::Board;
 use crate::boards::board::{GameCol, GameRow};
 use crate::boards::lines::{connect4_line_bitmasks};
 use crate::inputs::{MAX_COLS, MAX_ROWS, Observation, PlayerID};
+use crate::inputs::observation::get_opponent_id;
 
 // Bitmask = [u42;BITS_PLAYED] + [u42;BITS_PLAYER]
 pub type Bitmask = u128;  // 7*6 == 42 * 2 bits (board + player bit) == 84 bits
@@ -149,6 +150,10 @@ impl Board for BoardBitmask
     }
 
     fn huristic_score(&self, player_id: PlayerID) -> u32 {
+        return self.huristic_score_player(player_id)
+             - self.huristic_score_player(get_opponent_id(player_id).unwrap());
+    }
+    fn huristic_score_player(&self, player_id: PlayerID) -> u32 {
         let mut huristic_score = 0;
         for line in connect4_line_bitmasks() {
             // Restrict to the current line

@@ -93,6 +93,9 @@ impl Board for BoardArray
     fn huristic_score(&self, _player_id: PlayerID) -> u32 {
         todo!()
     }
+    fn huristic_score_player(&self, _player_id: PlayerID) -> u32 {
+        todo!()
+    }
 }
 
 

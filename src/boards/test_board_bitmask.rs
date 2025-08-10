@@ -40,8 +40,8 @@ mod tests {
             0, 0, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 0);
-        assert_eq!(board.huristic_score(1), 0);
+        assert_eq!(board.huristic_score_player(0), 0);
+        assert_eq!(board.huristic_score_player(1), 0);
     }
 
     #[test]
@@ -55,8 +55,8 @@ mod tests {
             1, 0, 0, 0, 0, 0, 2,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 3);
-        assert_eq!(board.huristic_score(0), 3);
+        assert_eq!(board.huristic_score_player(0), 3);
+        assert_eq!(board.huristic_score_player(0), 3);
     }
 
     #[test]
@@ -70,7 +70,7 @@ mod tests {
             1, 2, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 1);
+        assert_eq!(board.huristic_score_player(0), 1);
     }
 
     #[test]
@@ -84,7 +84,7 @@ mod tests {
             2, 1, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(1), 1);
+        assert_eq!(board.huristic_score_player(1), 1);
     }
 
     #[test]
@@ -98,7 +98,7 @@ mod tests {
             1, 2, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 11);
+        assert_eq!(board.huristic_score_player(0), 11);
     }
 
     #[test]
@@ -112,7 +112,7 @@ mod tests {
             2, 1, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(1), 11);
+        assert_eq!(board.huristic_score_player(1), 11);
     }
 
     #[test]
@@ -126,7 +126,7 @@ mod tests {
             1, 2, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 111);
+        assert_eq!(board.huristic_score_player(0), 111);
     }
 
     #[test]
@@ -140,7 +140,7 @@ mod tests {
             2, 1, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(1), 111);
+        assert_eq!(board.huristic_score_player(1), 111);
     }
 
     #[test]
@@ -154,7 +154,7 @@ mod tests {
             1, 2, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(0), 1000);
+        assert_eq!(board.huristic_score_player(0), 1000);
     }
 
     #[test]
@@ -168,6 +168,6 @@ mod tests {
             2, 1, 0, 0, 0, 0, 0,
         ];
         let board = BoardBitmask::from(Observation::from(observation_array));
-        assert_eq!(board.huristic_score(1), 1000);
+        assert_eq!(board.huristic_score_player(1), 1000);
     }
 }
