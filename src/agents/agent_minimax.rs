@@ -6,6 +6,8 @@ use crate::inputs::{Configuration, Observation};
 #[pyfunction]
 #[allow(dead_code)]
 pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
+    let DEPTH = 25;
+
     let board: BoardBitmask = obs.into(); // Convert Observation to BoardBitmask
     let player_id = <BoardBitmask as Board>::get_move_player(&board);
 
@@ -28,7 +30,7 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
     let mut max_col   = 3;
     for col in board.get_valid_actions() {
         if let Some(state) = board.step(col) {
-            let score = minimax(&*state, 5, true);
+            let score = minimax(&*state, DEPTH, true);
             if score > max_score {
                 max_score = score;
                 max_col = col;
