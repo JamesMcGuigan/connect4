@@ -76,11 +76,11 @@ impl Board for BoardVector
             // configuration: self.configuration.clone(),
         }))
     }
-    fn huristic_score(&self, _player_id: PlayerID) -> u32 {
+    fn huristic_score(&self, _player_id: PlayerID) -> i32 {
         todo!()
     }
 
-    fn huristic_score_player(&self, _player_id: PlayerID) -> u32 {
+    fn huristic_score_player(&self, _player_id: PlayerID) -> i32 {
         todo!()
     }
 }

@@ -90,10 +90,10 @@ impl Board for BoardArray
         self.board
     }
 
-    fn huristic_score(&self, _player_id: PlayerID) -> u32 {
+    fn huristic_score(&self, _player_id: PlayerID) -> i32 {
         todo!()
     }
-    fn huristic_score_player(&self, _player_id: PlayerID) -> u32 {
+    fn huristic_score_player(&self, _player_id: PlayerID) -> i32 {
         todo!()
     }
 }

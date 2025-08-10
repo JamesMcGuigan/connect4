@@ -149,11 +149,11 @@ impl Board for BoardBitmask
         false
     }
 
-    fn huristic_score(&self, player_id: PlayerID) -> u32 {
+    fn huristic_score(&self, player_id: PlayerID) -> i32 {
         return self.huristic_score_player(player_id)
              - self.huristic_score_player(get_opponent_id(player_id).unwrap());
     }
-    fn huristic_score_player(&self, player_id: PlayerID) -> u32 {
+    fn huristic_score_player(&self, player_id: PlayerID) -> i32 {
         let mut huristic_score = 0;
         for line in connect4_line_bitmasks() {
             // Restrict to the current line
@@ -169,7 +169,7 @@ impl Board for BoardBitmask
 
             let count = owned.count_ones();
             if count > 0 {
-                huristic_score += 10u32.pow(count - 1);
+                huristic_score += 10i32.pow(count - 1);
             }
         }
         huristic_score
