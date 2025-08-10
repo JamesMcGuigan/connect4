@@ -6,10 +6,11 @@ use crate::inputs::{Configuration, Observation};
 #[pyfunction]
 #[allow(dead_code)]
 pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
-    let DEPTH = 25;
+    let depth = 5;
 
     let board: BoardBitmask = obs.into(); // Convert Observation to BoardBitmask
     let player_id = <BoardBitmask as Board>::get_move_player(&board);
+    let opponent_id = <BoardBitmask as Board>::get_next_player(&board);
 
     // Default to column 3 (center) if first move
     if obs.step == 0 {
@@ -30,7 +31,7 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
     let mut max_col   = 3;
     for col in board.get_valid_actions() {
         if let Some(state) = board.step(col) {
-            let score = minimax(&*state, DEPTH, true);
+            let score = minimax(&*state, depth, true);
             if score > max_score {
                 max_score = score;
                 max_col = col;
@@ -43,7 +44,7 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
 fn minimax(state: &dyn Board, depth: u8, is_maximizing_player: bool) -> i32 {
     // Terminal check: depth limit, no moves, or a win on the board
     let actions = state.get_valid_actions();
-    if depth == 0 || actions.is_empty() || state.is_win(1) || state.is_win(2) {
+    if depth == 0 || actions.is_empty() || state.terminated() {
         let player = state.get_move_player();
         return state.huristic_score(player) as i32;
     }
