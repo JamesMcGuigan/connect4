@@ -148,10 +148,14 @@ impl Board for BoardBitmask
         false
     }
 
+    // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()-1
+    #[requires([0, 1].contains(&player_id))]
+    #[requires([0, 1].contains(&opponent_id))]
     fn huristic_score(&self, player_id: PlayerID, opponent_id: PlayerID) -> i32 {
         return self.huristic_score_player(player_id)
              - self.huristic_score_player(opponent_id);
     }
+    #[requires([0, 1].contains(&player_id))]
     fn huristic_score_player(&self, player_id: PlayerID) -> i32 {
         let mut huristic_score = 0;
         for line in connect4_line_bitmasks() {

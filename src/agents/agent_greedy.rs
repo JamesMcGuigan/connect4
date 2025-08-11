@@ -29,7 +29,8 @@ pub fn agent_greedy(obs: Observation, _conf: Configuration) -> u8 {
     let mut max_col   = 3;
     for col in board.get_valid_actions() {
         let state = board.step(col);
-        let score = state.unwrap().huristic_score(player_id, opponent_id);
+        // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()
+        let score = state.unwrap().huristic_score(player_id - 1, opponent_id - 1);
         if score > max_score {
             max_score = score;
             max_col   = col;
