@@ -8,6 +8,7 @@ use crate::inputs::{Configuration, Observation};
 pub fn agent_greedy(obs: Observation, _conf: Configuration) -> u8 {
     let board: BoardBitmask = obs.into(); // Convert Observation to BoardBitmask
     let player_id = <BoardBitmask as Board>::get_move_player(&board);
+    let opponent_id = <BoardBitmask as Board>::get_next_player(&board);
 
     // Default to column 3 (center) if first move
     if obs.step == 0 {
@@ -28,7 +29,7 @@ pub fn agent_greedy(obs: Observation, _conf: Configuration) -> u8 {
     let mut max_col   = 3;
     for col in board.get_valid_actions() {
         let state = board.step(col);
-        let score = state.unwrap().huristic_score_player(player_id);
+        let score = state.unwrap().huristic_score(player_id, opponent_id);
         if score > max_score {
             max_score = score;
             max_col   = col;
