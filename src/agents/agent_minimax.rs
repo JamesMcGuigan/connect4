@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use pyo3::prelude::*;
 use crate::boards::Board;
 use crate::boards::BoardBitmask;
@@ -31,12 +32,16 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
     }
 
     // Check for blocking opponent's winning move
+    let mut losing_moves: HashSet<u8> = HashSet::new();
     for col in board.get_valid_actions() {
         if let Some(next_board) = board.step(col) {
             for opponent_col in next_board.get_valid_actions() {
                 if let Some(opponent_board) = board.step(opponent_col) {
-                    if col == opponent_col { continue; }  // opponent will win if we play this move
-                    if opponent_board.is_win(opponent_id) {
+                    if col == opponent_col {
+                        losing_moves.insert(col);
+                        continue;
+                    }  // opponent will win if we play this move
+                    else if opponent_board.is_win(opponent_id) {
                         return col;
                     }
                 }
@@ -53,6 +58,7 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
             let score = minimax(&*state, depth, i32::MIN + 1, i32::MAX - 1,
                                 board.get_move_player(), board.get_next_player());  // CRASHES
             if score > max_score {
+                if losing_moves.contains(&col) { continue; }
                 max_score = score;
                 max_col = col;
             }
