@@ -17,6 +17,10 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
         return 3;
     }
 
+    if board.get_valid_actions().is_empty() {
+        return 3;
+    }
+
     // Check for winning move
     for col in board.get_valid_actions() {
         if let Some(next_board) = board.step(col) {
@@ -28,8 +32,8 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
 
     // Check for blocking opponent's winning move
     for col in board.get_valid_actions() {
-        if let Some(_next_board) = board.step(col) {
-            for opponent_col in board.get_valid_actions() {
+        if let Some(next_board) = board.step(col) {
+            for opponent_col in next_board.get_valid_actions() {
                 if let Some(opponent_board) = board.step(opponent_col) {
                     if col == opponent_col { continue; }  // opponent will win if we play this move
                     if opponent_board.is_win(opponent_id) {
@@ -41,13 +45,13 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
     }
 
     // Greedy pick huristic score for depth=1
-    let mut max_score = 0;
-    let mut max_col   = 3;
+    let mut max_score = i32::MIN;
+    let mut max_col = board.get_valid_actions()[0];
     for col in board.get_valid_actions() {
         if let Some(state) = board.step(col) {
-            let score = state.huristic_score(player_id, opponent_id) as i32;
-            // let score = minimax(&*state, depth, i32::MIN + 1, i32::MAX - 1,
-            //                     board.get_move_player(), board.get_next_player());
+            // let score = state.huristic_score(player_id, opponent_id) as i32;  // WORKS
+            let score = minimax(&*state, depth, i32::MIN + 1, i32::MAX - 1,
+                                board.get_move_player(), board.get_next_player());  // CRASHES
             if score > max_score {
                 max_score = score;
                 max_col = col;
