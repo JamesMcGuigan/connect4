@@ -6,6 +6,7 @@ use crate::agents::agent_modulo::agent_modulo;
 use crate::agents::agent_random::agent_random;
 use crate::agents::agent_greedy::agent_greedy;
 use crate::agents::agent_minimax::agent_minimax;
+use crate::agents::agent_minimax_iterative::agent_minimax_iterative;
 use crate::inputs::{Configuration, Observation};
 
 pub mod agents;
@@ -26,6 +27,7 @@ fn module_with_functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(agent_modulo))?;
     m.add_wrapped(wrap_pyfunction!(agent_greedy))?;
     m.add_wrapped(wrap_pyfunction!(agent_minimax))?;
+    m.add_wrapped(wrap_pyfunction!(agent_minimax_iterative))?;
 
     Ok(())
 }
