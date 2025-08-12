@@ -148,9 +148,6 @@ impl Board for BoardBitmask
         false
     }
 
-    // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()-1
-    #[requires([1, 2].contains(&player_id))]
-    #[requires([1, 2].contains(&opponent_id))]
     fn huristic_score(&self, player_id: PlayerID, opponent_id: PlayerID) -> i32 {
         return self.huristic_score_player(player_id)
              - self.huristic_score_player(opponent_id);
