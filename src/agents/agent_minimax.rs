@@ -45,8 +45,9 @@ pub fn agent_minimax(obs: Observation, _conf: Configuration) -> u8 {
     let mut max_col   = 3;
     for col in board.get_valid_actions() {
         if let Some(state) = board.step(col) {
-            let score = minimax(&*state, depth, i32::MIN + 1, i32::MAX - 1,
-                                board.get_move_player(), board.get_next_player());
+            let score = state.huristic_score(player_id, opponent_id) as i32;
+            // let score = minimax(&*state, depth, i32::MIN + 1, i32::MAX - 1,
+            //                     board.get_move_player(), board.get_next_player());
             if score > max_score {
                 max_score = score;
                 max_col = col;
