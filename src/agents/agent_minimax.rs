@@ -64,7 +64,7 @@ fn minimax(state: &dyn Board, depth: u8, mut alpha: i32, mut beta: i32,
         if state.is_win(root_player) { return i32::MAX; }
         if state.is_win(opponent_id) { return i32::MIN; }
         // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()
-        return state.huristic_score(root_player - 1, opponent_id - 1) as i32;
+        return state.huristic_score(root_player, opponent_id) as i32;
     }
 
     let is_maximizing_player = state.get_move_player() == root_player;

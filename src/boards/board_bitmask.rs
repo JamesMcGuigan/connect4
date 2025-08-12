@@ -149,13 +149,13 @@ impl Board for BoardBitmask
     }
 
     // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()-1
-    #[requires([0, 1].contains(&player_id))]
-    #[requires([0, 1].contains(&opponent_id))]
+    #[requires([1, 2].contains(&player_id))]
+    #[requires([1, 2].contains(&opponent_id))]
     fn huristic_score(&self, player_id: PlayerID, opponent_id: PlayerID) -> i32 {
         return self.huristic_score_player(player_id)
              - self.huristic_score_player(opponent_id);
     }
-    #[requires([0, 1].contains(&player_id))]
+    #[requires([1, 2].contains(&player_id))]
     fn huristic_score_player(&self, player_id: PlayerID) -> i32 {
         let mut huristic_score = 0;
         for line in connect4_line_bitmasks() {
@@ -165,7 +165,7 @@ impl Board for BoardBitmask
             if played == 0 { continue; } // nothing placed on this line
 
             // Select bits owned by the target player within played cells
-            let owned = if player_id == 0 { (!player) & played }  // player 1 encoded as 0 in player_plane
+            let owned = if player_id == 1 { (!player) & played }  // player 1 encoded as 0 in player_plane
                                              else {   player  & played }; // player 2 encoded as 1 in player_plane
             // Ignore lines that contain a mix (i.e., any enemy piece is present)
             if owned != played { continue; }
