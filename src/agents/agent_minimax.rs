@@ -61,9 +61,8 @@ fn minimax(state: &dyn Board, depth: u8, mut alpha: i32, mut beta: i32,
     // Terminal check: depth limit, no moves, or a win on the board
     let actions = state.get_valid_actions();
     if depth == 0 || actions.is_empty() || state.terminated() {
-        if state.is_win(root_player) { return i32::MAX; }
-        if state.is_win(opponent_id) { return i32::MIN; }
-        // BUGFIX: player_id for huristic_score is [0,1] not [1,2] from get_move_player()
+        if state.is_win(root_player) { return i32::MAX/2; }
+        if state.is_win(opponent_id) { return i32::MIN/2; }
         return state.huristic_score(root_player, opponent_id) as i32;
     }
 
