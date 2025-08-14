@@ -35,21 +35,24 @@ pub fn agent_minimax_iterative(obs: Observation, conf: Configuration) -> u8 {
 
     // // Check for blocking opponent's winning move
     // let mut losing_moves: HashSet<u8> = HashSet::new();
-    // for col in board.get_valid_actions() {
-    //     if let Some(next_board) = board.step(col) {
-    //         for opponent_col in next_board.get_valid_actions() {
+    // for player_col in board.get_valid_actions() {
+    //     if let Some(opponent_board) = board.step(player_col) {
+    //         for opponent_col in opponent_board.get_valid_actions() {
     //             if let Some(opponent_board) = board.step(opponent_col) {
-    //                 if col == opponent_col {
-    //                     losing_moves.insert(col);
-    //                     continue;
-    //                 }  // opponent will win if we play this move
-    //                 else if opponent_board.is_win(opponent_id) {
-    //                     return col;
+    //                 if opponent_board.is_win(opponent_id) {
+    //                     if player_col == opponent_col {
+    //                         losing_moves.insert(player_col);  // opponent will win if we play this move
+    //                         continue;
+    //                     } else {
+    //                         return opponent_col;
+    //                     }
     //                 }
     //             }
     //         }
     //     }
     // }
+
+
 
     let mut max_score = i32::MIN;
     let mut max_col = board.get_valid_actions()[0];
